@@ -55,21 +55,6 @@ class User extends Authenticatable
         return $this->belongsTo(Roles::class);
     }
 
-    // public function pelamar(): HasOne
-    // {
-    //     return $this->hasOne(Pelamar::class, 'id_user');
-    // }
-
-    // public function company(): HasOne
-    // {
-    //     return $this->hasOne(Company::class, 'id_user');
-    // }
-
-    // public function logs(): HasMany
-    // {
-    //     return $this->hasMany(Log::class, 'id_user');
-    // }
-
     // Check if user has specific permission
     public function hasPermission(string $permission): bool {
         return $this->role?->hasPermission($permission) ?? false;

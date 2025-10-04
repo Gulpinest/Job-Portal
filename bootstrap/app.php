@@ -12,6 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
+        $middleware->alias([
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'admin' => \App\Http\Middleware\admin::class,
+            'company' => \App\Http\Middleware\company::class,
+            'pelamar' => \App\Http\Middleware\pelamar::class,
+            // Middleware bawaan Breeze biasanya sudah otomatis terdaftar,
+            // namun jika perlu, alias lain bisa ditambahkan di sini.
+            // 'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            // 'auth' => \App\Http\Middleware\Authenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

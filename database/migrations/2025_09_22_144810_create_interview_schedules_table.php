@@ -12,18 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('interview_schedules', function (Blueprint $table) {
-            $table->id('id_schedule');
-            $table->string('type');
-            $table->string('tempat')->nullable();
-            $table->dateTime('waktu_jadwal')->nullable();
-            $table->text('catatan')->nullable();
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('id_lowongan');
-            $table->unsignedBigInteger('id_company');
-            $table->unsignedBigInteger('id_lamaran');
-            $table->timestamps();
+            $table->string('type'); // e.g., 'Online', 'Offline', Etc.
+            $table->string('tempat')->nullable(); // Link Zoom atau Alamat Tempat
+            $table->dateTime('waktu_jadwal');
+            $table->text('catatan')->nullable();
             $table->foreign('id_lowongan')->references('id_lowongan')->on('lowongans')->onDelete('cascade');
-            $table->foreign('id_company')->references('id_company')->on('companies')->onDelete('cascade');
-            $table->foreign('id_lamaran')->references('id_lamaran')->on('lamarans')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_lamaran');
             $table->unsignedBigInteger('id_interview_schedule');
             $table->string('tempat')->nullable();
-            $table->timestamps();
             $table->foreign('id_lamaran')->references('id_lamaran')->on('lamarans')->onDelete('cascade');
             $table->foreign('id_interview_schedule')->references('id')->on('interview_schedules')->onDelete('cascade');
             $table->timestamps();

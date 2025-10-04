@@ -24,4 +24,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('interview-schedules', InterviewScheduleController::class);
 });
 
+// Route yang hanya bisa diakses oleh admin
+Route::middleware('admin')->group(function () {
+
+});
+
+// Route yang hanya bisa diakses oleh company
+Route::middleware('company')->group(function () {
+
+});
+
+// Route yang hanya bisa diakses oleh pelamar
+Route::middleware('pelamar')->group(function () {
+
+});
+
 require __DIR__.'/auth.php';

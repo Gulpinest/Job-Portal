@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InterviewSchedule;
-use App\Models\Lamaran;
+use App\Models\Lowongan; // Import model Lowongan
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,9 +18,10 @@ class InterviewScheduleController extends Controller
         $company = Auth::user()->company;
 
         // Mengambil semua jadwal interview milik company tersebut,
-        // beserta data relasi 'lowongan' dan 'lamaran' (dengan data 'pelamar'-nya).
+        // beserta data relasi 'lowongan'. Relasi ke 'lamaran' tidak ada di migrasi,
+        // jadi kita hapus eager loading-nya.
         $schedules = InterviewSchedule::where('id_company', $company->id_company)
-                                      ->with(['lowongan', 'lamaran.pelamar']) // Eager Loading
+                                      ->with('lowongan') // Eager Loading
                                       ->latest()
                                       ->get();
 
@@ -34,12 +35,10 @@ class InterviewScheduleController extends Controller
     {
         $company = Auth::user()->company;
 
-        // Mengambil daftar lamaran yang masuk ke company ini untuk ditampilkan di form.
-        $lamarans = Lamaran::whereHas('lowongan', function($query) use ($company) {
-            $query->where('id_company', $company->id_company);
-        })->with('pelamar')->get();
+        // Mengambil daftar lowongan milik company ini untuk ditampilkan di form.
+        $lowongans = Lowongan::where('id_company', $company->id_company)->get();
         
-        return view('interview-schedules.create', compact('lamarans'));
+        return view('interview-schedules.create', compact('lowongans'));
     }
 
     /**
@@ -48,23 +47,28 @@ class InterviewScheduleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_lamaran' => 'required|exists:lamarans,id_lamaran',
-            'tempat' => 'required|string|max:255',
+            'id_lowongan' => 'required|exists:lowongans,id_lowongan',
+            'type' => 'required|string|max:255',
+            'tempat' => 'nullable|string|max:255',
+            'waktu_jadwal' => 'required|date_format:Y-m-d\TH:i',
+            'catatan' => 'nullable|string',
         ]);
 
         $company = Auth::user()->company;
-        $lamaran = Lamaran::with('lowongan')->find($request->id_lamaran);
+        $lowongan = Lowongan::find($request->id_lowongan);
 
-        // Keamanan: Memastikan lamaran yang dipilih adalah milik company yang login.
-        if ($lamaran->lowongan->id_company !== $company->id_company) {
+        // Keamanan: Memastikan lowongan yang dipilih adalah milik company yang login.
+        if ($lowongan->id_company !== $company->id_company) {
             abort(403, 'Akses Ditolak');
         }
 
         InterviewSchedule::create([
-            'id_lamaran' => $lamaran->id_lamaran,
-            'id_lowongan' => $lamaran->id_lowongan,
-            'id_company' => $company->id_company,
+            'id_lowongan' => $request->id_lowongan,
+            'id_company' => $company->id_company, // Asumsi ada relasi ke company
+            'type' => $request->type,
             'tempat' => $request->tempat,
+            'waktu_jadwal' => $request->waktu_jadwal,
+            'catatan' => $request->catatan,
         ]);
 
         return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil dibuat.');
@@ -75,18 +79,17 @@ class InterviewScheduleController extends Controller
      */
     public function edit(InterviewSchedule $interviewSchedule)
     {
+        $company = Auth::user()->company;
+
         // Keamanan: Pastikan company yang login adalah pemilik jadwal ini.
-        if ($interviewSchedule->id_company !== Auth::user()->company->id_company) {
+        if ($interviewSchedule->id_company !== $company->id_company) {
             abort(403, 'Akses Ditolak');
         }
 
-        $company = Auth::user()->company;
-        // Ambil daftar lamaran untuk dropdown, sama seperti di method create().
-        $lamarans = Lamaran::whereHas('lowongan', function($query) use ($company) {
-            $query->where('id_company', $company->id_company);
-        })->with('pelamar')->get();
+        // Ambil daftar lowongan untuk dropdown, sama seperti di method create().
+        $lowongans = Lowongan::where('id_company', $company->id_company)->get();
 
-        return view('interview-schedules.edit', compact('interviewSchedule', 'lamarans'));
+        return view('interview-schedules.edit', compact('interviewSchedule', 'lowongans'));
     }
 
     /**
@@ -95,25 +98,29 @@ class InterviewScheduleController extends Controller
     public function update(Request $request, InterviewSchedule $interviewSchedule)
     {
         $request->validate([
-            'id_lamaran' => 'required|exists:lamarans,id_lamaran',
-            'tempat' => 'required|string|max:255',
+            'id_lowongan' => 'required|exists:lowongans,id_lowongan',
+            'type' => 'required|string|max:255',
+            'tempat' => 'nullable|string|max:255',
+            'waktu_jadwal' => 'required|date_format:Y-m-d\TH:i',
+            'catatan' => 'nullable|string',
         ]);
 
         $company = Auth::user()->company;
-        $lamaran = Lamaran::with('lowongan')->find($request->id_lamaran);
+        $lowongan = Lowongan::find($request->id_lowongan);
         
         // Keamanan ganda:
         // 1. Cek kepemilikan jadwal yang akan di-update.
-        // 2. Cek kepemilikan lamaran baru yang dipilih.
-        if ($interviewSchedule->id_company !== $company->id_company || $lamaran->lowongan->id_company !== $company->id_company) {
+        // 2. Cek kepemilikan lowongan baru yang dipilih.
+        if ($interviewSchedule->id_company !== $company->id_company || $lowongan->id_company !== $company->id_company) {
             abort(403, 'Akses Ditolak');
         }
 
         $interviewSchedule->update([
-            'id_lamaran' => $lamaran->id_lamaran,
-            'id_lowongan' => $lamaran->id_lowongan,
-            'id_company' => $company->id_company,
+            'id_lowongan' => $request->id_lowongan,
+            'type' => $request->type,
             'tempat' => $request->tempat,
+            'waktu_jadwal' => $request->waktu_jadwal,
+            'catatan' => $request->catatan,
         ]);
 
         return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil diperbarui.');

@@ -27,13 +27,25 @@
                                 <tr>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Pelamar</th>
+                                        ID</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Lowongan</th>
+                                        ID Lowongan</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Tipe</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Tempat / Link</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Waktu Jadwal</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Catatan</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Dibuat Pada</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Aksi</th>
@@ -44,17 +56,32 @@
                                     <tr>
                                         <td
                                             class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                            {{ $schedule->lamaran->pelamar->nama_pelamar ?? 'N/A' }}</td>
+                                            {{ $schedule->id }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $schedule->lowongan->judul ?? 'N/A' }}</td>
+                                            {{ $schedule->id_lowongan }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            {{ $schedule->tempat }}</td>
+                                            {{ $schedule->type }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                            {{ $schedule->tempat }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                            {{ \Carbon\Carbon::parse($schedule->waktu_jadwal)->format('d F Y H:i') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $schedule->catatan ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {{ \Carbon\Carbon::parse($schedule->created_at)->format('d F Y') }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <form
                                                 onsubmit="return confirm('Apakah Anda Yakin ingin menghapus jadwal ini?');"
-                                                action="{{ route('interview-schedules.destroy', $schedule->id_schedule) }}"
+                                                action="{{ route('interview-schedules.destroy', $schedule->id) }}"
                                                 method="POST" class="inline-flex">
-                                                <a href="{{ route('interview-schedules.edit', $schedule->id_schedule) }}"
+                                                <a href="{{ route('interview-schedules.edit', $schedule->id) }}"
                                                     class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 mr-3">Edit</a>
                                                 @csrf
                                                 @method('DELETE')
@@ -65,7 +92,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4"
+                                        <td colspan="8"
                                             class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
                                             Belum ada jadwal interview yang dibuat.
                                         </td>

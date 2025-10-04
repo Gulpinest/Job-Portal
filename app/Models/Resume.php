@@ -15,6 +15,7 @@ class Resume extends Model
     protected $fillable = [
         'id_pelamar',
         'nama_resume',
+        'skill',
         'file_resume',
     ];
 

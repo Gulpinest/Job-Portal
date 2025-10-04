@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('interview_schedules', function (Blueprint $table) {
             $table->id('id_schedule');
+            $table->string('type');
+            $table->string('tempat')->nullable();
+            $table->dateTime('waktu_jadwal')->nullable();
+            $table->text('catatan')->nullable();
             $table->unsignedBigInteger('id_lowongan');
             $table->unsignedBigInteger('id_company');
             $table->unsignedBigInteger('id_lamaran');
-            $table->string('tempat')->nullable();
             $table->timestamps();
             $table->foreign('id_lowongan')->references('id_lowongan')->on('lowongans')->onDelete('cascade');
             $table->foreign('id_company')->references('id_company')->on('companies')->onDelete('cascade');

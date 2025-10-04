@@ -21,36 +21,64 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('interview-schedules.update', $interviewSchedule->id_schedule) }}"
+                    <form action="{{ route('interview-schedules.update', $interviewSchedule->id) }}"
                         method="POST">
                         @csrf
                         @method('PUT')
 
-                        <!-- Pilih Lamaran -->
                         <div>
-                            <label for="id_lamaran"
-                                class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Pilih Pelamar (Lamaran)') }}</label>
-                            <select id="id_lamaran" name="id_lamaran"
+                            <label for="id_lowongan" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Pilih Lowongan') }}
+                            </label>
+                            <select id="id_lowongan" name="id_lowongan"
                                 class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                 required>
-                                <option value="">-- Pilih Lamaran --</option>
-                                @foreach($lamarans as $lamaran)
-                                    <option value="{{ $lamaran->id_lamaran }}" @selected(old('id_lamaran', $interviewSchedule->id_lamaran) == $lamaran->id_lamaran)>
-                                        {{ $lamaran->pelamar->nama_pelamar ?? 'N/A' }} -
-                                        ({{ $lamaran->lowongan->judul ?? 'N/A' }})
+                                <option value="">-- Pilih Lowongan --</option>
+                                @foreach($lowongans as $lowongan)
+                                    <option value="{{ $lowongan->id_lowongan }}" 
+                                        {{ old('id_lowongan', $interviewSchedule->id_lowongan) == $lowongan->id_lowongan ? 'selected' : '' }}>
+                                        {{ $lowongan->judul }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Tempat Interview -->
+                        
                         <div class="mt-4">
-                            <label for="tempat"
-                                class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Tempat / Link Interview') }}</label>
+                            <label for="type" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Tipe Interview') }}</label>
+                            <select id="type" name="type"
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                required>
+                                <option value="">-- Pilih Tipe --</option>
+                                <option value="Online" {{ old('type', $interviewSchedule->type) == 'Online' ? 'selected' : '' }}>Online</option>
+                                <option value="Offline" {{ old('type', $interviewSchedule->type) == 'Offline' ? 'selected' : '' }}>Offline</option>
+                            </select>
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="tempat" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Tempat / Link Interview') }}</label>
                             <input id="tempat" name="tempat" type="text"
                                 class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
-                                value="{{ old('tempat', $interviewSchedule->tempat) }}" required
+                                value="{{ old('tempat', $interviewSchedule->tempat) }}"
                                 placeholder="Contoh: Google Meet atau Alamat Kantor" />
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="waktu_jadwal" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Waktu Jadwal') }}</label>
+                            <input id="waktu_jadwal" name="waktu_jadwal" type="datetime-local"
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                value="{{ old('waktu_jadwal', \Carbon\Carbon::parse($interviewSchedule->waktu_jadwal)->format('Y-m-d\TH:i')) }}"
+                                required />
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="catatan" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Catatan (Opsional)') }}</label>
+                            <textarea id="catatan" name="catatan"
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                rows="3">{{ old('catatan', $interviewSchedule->catatan) }}</textarea>
                         </div>
 
                         <div class="flex items-center justify-end mt-4">

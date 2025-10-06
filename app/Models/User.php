@@ -51,9 +51,12 @@ class User extends Authenticatable
         ];
     }
 
-    public function role(string $role){
-        return $this->belongsTo(Roles::class);
+    public function role()
+    {
+        return $this->belongsTo(Roles::class, 'role_id');
     }
+
+
 
     // Check if user has specific permission
     public function hasPermission(string $permission): bool {

@@ -5,6 +5,7 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\InterviewScheduleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Login Register Company
+    Route::get('/company/login-register', [CompanyController::class, 'loginRegisterPage'])->name('company.login-register');
+
+    // Show the login form
+    Route::get('/company/login', [CompanyController::class, 'showLoginForm'])->name('company.login');
+
+    // Handle the login request
+    Route::post('/company/login', [CompanyController::class, 'login']);
+
+    Route::get('/company/register', [CompanyController::class, 'showForm'])->name('company.register');
+    Route::post('/company/register', [CompanyController::class, 'store'])->name('company.store');
+
+
     Route::resource('resumes', ResumeController::class);
     Route::resource('lowongans', LowonganController::class);
     Route::resource('interview-schedules', InterviewScheduleController::class);
@@ -31,7 +45,6 @@ Route::middleware('admin')->group(function () {
 
 // Route yang hanya bisa diakses oleh company
 Route::middleware('company')->group(function () {
-
 });
 
 // Route yang hanya bisa diakses oleh pelamar

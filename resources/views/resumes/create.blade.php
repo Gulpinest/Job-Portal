@@ -33,6 +33,14 @@
                         </div>
 
                         <div class="mt-4">
+                            <label for="skill"
+                                class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Skill Utama') }}</label>
+                            <input id="skill" name="skill" type="text"
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                value="{{ old('skill') }}" required />
+                        </div>
+
+                        <div class="mt-4">
                             <label for="file_resume"
                                 class="block font-medium text-sm text-gray-700 dark:text-gray-300">{{ __('Pilih File (PDF, DOC, DOCX)') }}</label>
                             <input id="file_resume" name="file_resume" type="file"

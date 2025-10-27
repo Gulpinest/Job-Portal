@@ -7,6 +7,7 @@ use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\InterviewScheduleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\PelamarLowonganController;
 
 Route::get('/', function () {
@@ -54,8 +55,11 @@ Route::middleware('pelamar')->group(function () {
     Route::delete('/pelamar/data/delete', [PelamarController::class, 'destroy'])->name('pelamar.destroy');
 
     Route::resource('resumes', ResumeController::class);
+
     Route::get('/lowongan-kerja', [PelamarLowonganController::class, 'index'])->name('lowongans.pelamar_index');
     Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.show');
+
+    Route::post('/lamar', [LamaranController::class, 'store'])->name('lamaran.store');
 });
 
 require __DIR__.'/auth.php';

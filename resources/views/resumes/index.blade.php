@@ -36,6 +36,9 @@
                                         Judul Resume</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Skill</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         File</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -46,9 +49,14 @@
                                 @forelse ($resumes as $index => $resume)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            {{ $index + 1 }}</td>
+                                            {{ $index + 1 }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            {{ $resume->nama_resume }}</td>
+                                            {{ $resume->nama_resume }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                            {{ $resume->skill }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <a href="{{ Storage::url($resume->file_resume) }}" target="_blank"
                                                 class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900">

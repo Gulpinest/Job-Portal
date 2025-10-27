@@ -43,6 +43,7 @@ class ResumeController extends Controller
         // 1. Validasi data yang masuk dari form.
         $request->validate([
             'nama_resume' => 'required|string|max:255',
+            'skill' => 'required|string|max:255',
             'file_resume' => 'required|file|mimes:pdf,doc,docx|max:2048', // File harus pdf/doc/docx, maks 2MB
         ]);
 
@@ -55,6 +56,7 @@ class ResumeController extends Controller
         Resume::create([
             'id_pelamar' => $pelamar->id_pelamar,
             'nama_resume' => $request->nama_resume,
+            'skill' => $request->skill,
             'file_resume' => $filePath,
         ]);
 

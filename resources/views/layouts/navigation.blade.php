@@ -16,22 +16,24 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- Link Resume --}}
-                    <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
-                        {{ __('Resume') }}
-                    </x-nav-link>
+                    @if(auth()->user()->isPelamar())
+                        {{-- Link Resume --}}
+                        <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
+                            {{ __('Resume') }}
+                        </x-nav-link>
+                    @elseif (auth()->user()->isCompany())
+                        {{-- Link Lowongan --}}
+                        <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
+                            {{ __('Lowongan') }}
+                        </x-nav-link>
 
-                    {{-- Link Lowongan --}}
-                    <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
-                        {{ __('Lowongan') }}
-                    </x-nav-link>
-
-                    {{-- TAMBAHKAN MULAI DARI SINI (DESKTOP) --}}
-                    <x-nav-link :href="route('interview-schedules.index')"
-                        :active="request()->routeIs('interview-schedules.*')">
-                        {{ __('Jadwal Interview') }}
-                    </x-nav-link>
-                    {{-- TAMBAHKAN SAMPAI SINI (DESKTOP) --}}
+                        {{-- TAMBAHKAN MULAI DARI SINI (DESKTOP) --}}
+                        <x-nav-link :href="route('interview-schedules.index')"
+                            :active="request()->routeIs('interview-schedules.*')">
+                            {{ __('Jadwal Interview') }}
+                        </x-nav-link>
+                        {{-- TAMBAHKAN SAMPAI SINI (DESKTOP) --}}
+                    @endif
                 </div>
             </div>
 

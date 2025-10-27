@@ -20,10 +20,11 @@ class InterviewScheduleController extends Controller
         // Mengambil semua jadwal interview milik company tersebut,
         // beserta data relasi 'lowongan'. Relasi ke 'lamaran' tidak ada di migrasi,
         // jadi kita hapus eager loading-nya.
-        $schedules = InterviewSchedule::where('id_company', $company->id_company)
-                                      ->with('lowongan') // Eager Loading
-                                      ->latest()
-                                      ->get();
+        $schedules = InterviewSchedule::whereHas('lowongan', function($query) use ($company) {
+                                            $query->where('id_company', $company->id_company);
+                                        })->with('lowongan') // Eager Loading
+                                        ->latest()
+                                        ->get();
 
         return view('interview-schedules.index', compact('schedules'));
     }
@@ -37,7 +38,7 @@ class InterviewScheduleController extends Controller
 
         // Mengambil daftar lowongan milik company ini untuk ditampilkan di form.
         $lowongans = Lowongan::where('id_company', $company->id_company)->get();
-        
+
         return view('interview-schedules.create', compact('lowongans'));
     }
 
@@ -46,6 +47,8 @@ class InterviewScheduleController extends Controller
      */
     public function store(Request $request)
     {
+        // return dd($request->all());
+
         $request->validate([
             'id_lowongan' => 'required|exists:lowongans,id_lowongan',
             'type' => 'required|string|max:255',
@@ -64,7 +67,7 @@ class InterviewScheduleController extends Controller
 
         InterviewSchedule::create([
             'id_lowongan' => $request->id_lowongan,
-            'id_company' => $company->id_company, // Asumsi ada relasi ke company
+            // 'id_company' => $company->id_company, // Asumsi ada relasi ke company
             'type' => $request->type,
             'tempat' => $request->tempat,
             'waktu_jadwal' => $request->waktu_jadwal,
@@ -107,7 +110,7 @@ class InterviewScheduleController extends Controller
 
         $company = Auth::user()->company;
         $lowongan = Lowongan::find($request->id_lowongan);
-        
+
         // Keamanan ganda:
         // 1. Cek kepemilikan jadwal yang akan di-update.
         // 2. Cek kepemilikan lowongan baru yang dipilih.
@@ -135,7 +138,7 @@ class InterviewScheduleController extends Controller
         if ($interviewSchedule->id_company !== Auth::user()->company->id_company) {
             abort(403, 'Akses Ditolak');
         }
-        
+
         $interviewSchedule->delete();
 
         return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil dihapus.');

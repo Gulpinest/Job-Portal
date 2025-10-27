@@ -51,6 +51,14 @@ class User extends Authenticatable
         ];
     }
 
+    public function pelamar(){
+        return $this->hasOne(Pelamar::class, 'id_user');
+    }
+
+    public function company(){
+        return $this->hasOne(Company::class, 'id_user');
+    }
+
     public function role(string $role){
         return $this->belongsTo(Roles::class);
     }
@@ -90,15 +98,15 @@ class User extends Authenticatable
 
  // Helper methods for role checking
     public function isAdmin(): bool{
-        return $this->getRoleName() === 'admin';
+        return $this->role_id === 1;
     }
 
     public function isPelamar(): bool{
-        return $this->getRoleName() === 'pelamar';
+        return $this->role_id === 2;
     }
 
     public function isCompany(): bool{
-        return $this->getRoleName() === 'company';
+        return $this->role_id === 3;
     }
 
 }

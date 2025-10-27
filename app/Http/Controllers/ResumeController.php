@@ -17,11 +17,13 @@ class ResumeController extends Controller
         // Asumsi: Setiap User memiliki satu relasi 'pelamar'.
         $pelamar = Auth::user()->pelamar;
 
+        // return dd(Auth::user()->isPelamar());
+
         // Ambil semua resume yang 'id_pelamar'-nya cocok, urutkan dari yang terbaru.
         $resumes = Resume::where('id_pelamar', $pelamar->id_pelamar)
                          ->latest() // Mengurutkan berdasarkan created_at (terbaru dulu)
                          ->get();
-                         
+
         return view('resumes.index', compact('resumes'));
     }
 
@@ -70,7 +72,7 @@ class ResumeController extends Controller
         if ($resume->id_pelamar !== Auth::user()->pelamar->id_pelamar) {
             abort(403); // Akses ditolak
         }
-        
+
         return view('resumes.show', compact('resume'));
     }
 

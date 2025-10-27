@@ -13,21 +13,23 @@ class InterviewSchedule extends Model
     protected $primaryKey = 'id_schedule';
 
     protected $fillable = [
+        'id_lowongan',
+        'id_company',
         'type',
         'tempat',
         'waktu_jadwal',
         'catatan',
     ];
 
-    // public function lowongan(): BelongsTo
-    // {
-    //     return $this->belongsTo(Lowongan::class, 'id_lowongan');
-    // }
+    public function lowongan(): BelongsTo
+    {
+        return $this->belongsTo(Lowongan::class, 'id_lowongan');
+    }
 
-    // public function company(): BelongsTo
-    // {
-    //     return $this->belongsTo(Company::class, 'id_company');
-    // }
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'id_company');
+    }
 
     // public function lamaran(): BelongsTo
     // {

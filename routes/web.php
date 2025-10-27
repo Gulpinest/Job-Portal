@@ -32,11 +32,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/company/register', [CompanyController::class, 'showForm'])->name('company.register');
     Route::post('/company/register', [CompanyController::class, 'store'])->name('company.store');
-
-
-    Route::resource('resumes', ResumeController::class);
-    Route::resource('lowongans', LowonganController::class);
-    Route::resource('interview-schedules', InterviewScheduleController::class);
 });
 
 // Route yang hanya bisa diakses oleh admin
@@ -46,6 +41,8 @@ Route::middleware('admin')->group(function () {
 
 // Route yang hanya bisa diakses oleh company
 Route::middleware('company')->group(function () {
+    Route::resource('lowongans', LowonganController::class);
+    Route::resource('interview-schedules', InterviewScheduleController::class);
 });
 
 // Route yang hanya bisa diakses oleh pelamar
@@ -54,6 +51,8 @@ Route::middleware('pelamar')->group(function () {
     Route::get('/pelamar/data/edit', [PelamarController::class, 'edit'])->name('pelamar.edit');
     Route::put('/pelamar/data/update', [PelamarController::class, 'update'])->name('pelamar.update');
     Route::delete('/pelamar/data/delete', [PelamarController::class, 'destroy'])->name('pelamar.destroy');
+
+    Route::resource('resumes', ResumeController::class);
 });
 
 require __DIR__.'/auth.php';

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PelamarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\LowonganController;
@@ -49,7 +50,10 @@ Route::middleware('company')->group(function () {
 
 // Route yang hanya bisa diakses oleh pelamar
 Route::middleware('pelamar')->group(function () {
-
+    Route::get('/pelamar/data', [PelamarController::class, 'show'])->name('pelamar.profil');
+    Route::get('/pelamar/data/edit', [PelamarController::class, 'edit'])->name('pelamar.edit');
+    Route::put('/pelamar/data/update', [PelamarController::class, 'update'])->name('pelamar.update');
+    Route::delete('/pelamar/data/delete', [PelamarController::class, 'destroy'])->name('pelamar.destroy');
 });
 
 require __DIR__.'/auth.php';

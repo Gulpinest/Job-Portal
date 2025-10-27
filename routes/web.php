@@ -5,6 +5,8 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\InterviewScheduleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\PelamarLowonganController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +39,9 @@ Route::middleware('company')->group(function () {
 // Route yang hanya bisa diakses oleh pelamar
 Route::middleware('pelamar')->group(function () {
 
+    Route::resource('resumes', ResumeController::class);
+    Route::get('/lowongan-kerja', [PelamarLowonganController::class, 'index'])->name('lowongans.pelamar_index');
+    Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.show');
 });
 
 require __DIR__.'/auth.php';

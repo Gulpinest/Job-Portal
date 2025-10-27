@@ -13,27 +13,19 @@ class LowonganController extends Controller
      */
     public function index()
     {
-        // Asumsi: Setiap User memiliki relasi 'company'
-        // PENTING: Jika error 'property company on null', artinya user belum terhubung ke company.
         $company = Auth::user()->company;
         
         // Ambil semua lowongan milik company tersebut
         $lowongans = Lowongan::where('id_company', $company->id_company)->latest()->get();
-
+        
         return view('lowongans.index', compact('lowongans'));
     }
 
-    /**
-     * Menampilkan form untuk membuat lowongan baru.
-     */
     public function create()
     {
         return view('lowongans.create');
     }
 
-    /**
-     * Menyimpan lowongan baru ke database.
-     */
     public function store(Request $request)
     {
         $request->validate([

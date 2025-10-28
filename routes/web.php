@@ -60,6 +60,7 @@ Route::middleware('pelamar')->group(function () {
     Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.detail');
 
     Route::post('/lamar', [LamaranController::class, 'store'])->name('lamaran.store');
+    Route::get('/lamaran-saya', [PelamarLowonganController::class, 'lamaran_saya'])->name('lowongans.lamaran_saya');
 });
 
 require __DIR__.'/auth.php';

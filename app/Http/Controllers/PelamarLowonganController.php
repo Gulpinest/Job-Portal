@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lamaran;
 use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,5 +22,17 @@ class PelamarLowonganController extends Controller
         $resumes = Auth::user()->pelamar->resumes;
 
         return view('lowongans.detail', compact('lowongan', 'resumes'));
+    }
+
+    public function lamaran_saya()
+    {
+        $user = Auth::user();
+        
+        $lamarans = Lamaran::where('id_pelamar', $user->pelamar->id_pelamar)
+                           ->with(['lowongan.company', 'resume']) 
+                           ->latest()
+                           ->get();
+        
+        return view('lowongans.lamaran_saya', compact('lamarans'));
     }
 }

@@ -29,6 +29,7 @@ class LamaranController extends Controller
             'id_lowongan' => $request->id_lowongan,
             'id_resume' => $request->id_resume,
             'id_pelamar' => $user->pelamar->id_pelamar,
+            'cv'=> $request->id_resume,
             'status' => 'Diajukan',
         ]);
 

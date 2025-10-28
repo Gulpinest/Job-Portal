@@ -33,7 +33,7 @@
                             </div>
                             <div
                                 class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end items-center space-x-3">
-                                <a href="{{ route('lowongans.show', $lowongan->id_lowongan) }}"
+                                <a href="{{ route('lowongans.detail', $lowongan->id_lowongan) }}"
                                     class="text-sm text-blue-600 dark:text-blue-400 hover:underline font-bold">Lihat Detail
                                     & Lamar</a>
                             </div>

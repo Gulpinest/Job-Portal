@@ -57,7 +57,7 @@ Route::middleware('pelamar')->group(function () {
     Route::resource('resumes', ResumeController::class);
 
     Route::get('/lowongan-kerja', [PelamarLowonganController::class, 'index'])->name('lowongans.pelamar_index');
-    Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.show');
+    Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.detail');
 
     Route::post('/lamar', [LamaranController::class, 'store'])->name('lamaran.store');
 });

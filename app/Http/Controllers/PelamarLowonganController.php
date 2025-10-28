@@ -19,6 +19,7 @@ class PelamarLowonganController extends Controller
     {
         $lowongan->load('company');
         $resumes = Auth::user()->pelamar->resumes;
-        return view('lowongans.show', compact('lowongan'));
+
+        return view('lowongans.detail', compact('lowongan', 'resumes'));
     }
 }

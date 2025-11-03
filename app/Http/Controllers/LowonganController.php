@@ -3,27 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
+use App\Models\LowonganSkill; 
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LowonganController extends Controller
 {
-    /**
-     * Menampilkan semua lowongan dari company yang sedang login.
-     */
     public function index()
     {
         $company = Auth::user()->company;
-        
-        // Ambil semua lowongan milik company tersebut
         $lowongans = Lowongan::where('id_company', $company->id_company)->latest()->get();
-        
         return view('lowongans.index', compact('lowongans'));
     }
 
     public function create()
     {
-        return view('lowongans.create');
+        $allSkills = Skill::all(); // semua skill master
+        $selectedSkills = [];      // belum ada yang dipilih
+
+        return view('lowongans.create', compact('allSkills', 'selectedSkills'));
     }
 
     public function store(Request $request)
@@ -33,11 +32,14 @@ class LowonganController extends Controller
             'posisi' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
+            'skills' => 'array', // 🆕 validasi tambahan
+            'skills.*' => 'string|max:255',
         ]);
 
         $company = Auth::user()->company;
 
-        Lowongan::create([
+        // Buat lowongan baru
+        $lowongan = Lowongan::create([
             'id_company' => $company->id_company,
             'judul' => $request->judul,
             'posisi' => $request->posisi,
@@ -45,28 +47,36 @@ class LowonganController extends Controller
             'status' => $request->status,
         ]);
 
+        // Simpan skill yang dibutuhkan ke tabel lowongan_skill
+        if ($request->filled('skills')) {
+            foreach ($request->skills as $skill) {
+                if (!empty($skill)) {
+                    LowonganSkill::create([
+                        'id_lowongan' => $lowongan->id_lowongan,
+                        'nama_skill' => $skill,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }
 
-    /**
-     * Menampilkan form untuk mengedit lowongan.
-     */
     public function edit(Lowongan $lowongan)
     {
-        // Keamanan: Pastikan company hanya bisa edit lowongannya sendiri
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403, 'AKSES DITOLAK');
         }
 
-        return view('lowongans.edit', compact('lowongan'));
+        // 🆕 Ambil skill-skill yang sudah ada agar bisa ditampilkan di form edit
+        $allSkills = Skill::all(); // master skill
+        $selectedSkills = $lowongan->skills->pluck('nama_skill')->toArray();
+
+        return view('lowongans.edit', compact('lowongan', 'allSkills', 'selectedSkills'));
     }
 
-    /**
-     * Memperbarui data lowongan di database.
-     */
     public function update(Request $request, Lowongan $lowongan)
     {
-        // Keamanan: Pastikan company hanya bisa update lowongannya sendiri
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403, 'AKSES DITOLAK');
         }
@@ -76,19 +86,32 @@ class LowonganController extends Controller
             'posisi' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
+            'skills' => 'array',  
+            'skills.*' => 'string|max:255',
         ]);
 
-        $lowongan->update($request->all());
+        // Update data utama lowongan
+        $lowongan->update($request->only(['judul', 'posisi', 'deskripsi', 'status']));
+
+        // Update skills: hapus lama, simpan ulang
+        LowonganSkill::where('id_lowongan', $lowongan->id_lowongan)->delete();
+
+        if ($request->filled('skills')) {
+            foreach ($request->skills as $skill) {
+                if (!empty($skill)) {
+                    LowonganSkill::create([
+                        'id_lowongan' => $lowongan->id_lowongan,
+                        'nama_skill' => $skill,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('lowongans.index')->with('success', 'Lowongan berhasil diperbarui!');
     }
 
-    /**
-     * Menghapus lowongan dari database.
-     */
     public function destroy(Lowongan $lowongan)
     {
-        // Keamanan: Pastikan company hanya bisa hapus lowongannya sendiri
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403, 'AKSES DITOLAK');
         }
@@ -97,4 +120,5 @@ class LowonganController extends Controller
 
         return redirect()->route('lowongans.index')->with('success', 'Lowongan berhasil dihapus!');
     }
+
 }

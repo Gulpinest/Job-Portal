@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\PelamarLowonganController;
+use App\Http\Controllers\SkillController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,6 +62,9 @@ Route::middleware('pelamar')->group(function () {
 
     Route::post('/lamar', [LamaranController::class, 'store'])->name('lamaran.store');
     Route::get('/lamaran-saya', [PelamarLowonganController::class, 'lamaran_saya'])->name('lowongans.lamaran_saya');
+
+    Route::resource('skills', SkillController::class);
+
 });
 
 require __DIR__.'/auth.php';

@@ -21,11 +21,14 @@
                         <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
                             {{ __('Resume') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
+                            {{ __('Skill Saya') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.*')">
                             {{ __('Lowongan') }}
                         </x-nav-link>
                         <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.*')">
-                            {{ __('LowonganSaya') }}
+                            {{ __('Lamaran Saya') }}
                         </x-nav-link>
                     @elseif (auth()->user()->isCompany())
                         {{-- Link Lowongan --}}
@@ -110,6 +113,10 @@
 
             <x-responsive-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
                 {{ __('Resume') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
+                {{ __('Skill Saya') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">

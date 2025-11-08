@@ -32,7 +32,7 @@ class LowonganController extends Controller
             'posisi' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
-            'skills' => 'array', // 🆕 validasi tambahan
+            'skills' => 'array', 
             'skills.*' => 'string|max:255',
         ]);
 

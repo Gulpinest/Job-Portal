@@ -54,7 +54,7 @@
 
                         <!-- BARIS 2: Lokasi & Gaji -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Lokasi Kantor/Remote (BARU DITAMBAHKAN) -->
+                            <!-- Lokasi Kantor/Remote -->
                             <div>
                                 <label for="lokasi_kantor" class="block font-medium text-sm text-gray-700">Lokasi
                                     Kantor/Remote</label>
@@ -64,7 +64,7 @@
                                     placeholder="Contoh: Jakarta Selatan, Remote" />
                             </div>
 
-                            <!-- Gaji (BARU DITAMBAHKAN) -->
+                            <!-- Gaji -->
                             <div>
                                 <label for="gaji" class="block font-medium text-sm text-gray-700">Perkiraan Gaji (Per
                                     Bulan)</label>
@@ -75,9 +75,9 @@
                             </div>
                         </div>
 
-                        <!-- BARIS 3: Keterampilan & Status -->
+                        <!-- BARIS 3: Keterampilan & Tipe Kerja (DIPISAHKAN) -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Keterampilan (BARU DITAMBAHKAN) -->
+                            <!-- Keterampilan -->
                             <div>
                                 <label for="keterampilan" class="block font-medium text-sm text-gray-700">Keterampilan
                                     Utama (Pisahkan dengan koma)</label>
@@ -87,16 +87,34 @@
                                     placeholder="Contoh: Laravel, API, Tailwind, MySQL" />
                             </div>
 
-                            <!-- Status -->
+                            <!-- Tipe Kerja (BARU DITAMBAHKAN) -->
                             <div>
-                                <label for="status" class="block font-medium text-sm text-gray-700">Status
-                                    Lowongan</label>
-                                <select name="status" id="status"
+                                <label for="tipe_kerja" class="block font-medium text-sm text-gray-700">Tipe
+                                    Pekerjaan</label>
+                                <select name="tipe_kerja" id="tipe_kerja" required
                                     class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
-                                    <option value="Open" {{ old('status', $lowongan->status) == 'Open' ? 'selected' : '' }}>Open (Menerima Lamaran)</option>
-                                    <option value="Closed" {{ old('status', $lowongan->status) == 'Closed' ? 'selected' : '' }}>Closed (Ditutup)</option>
+                                    <option value="">-- Pilih Tipe Kerja --</option>
+                                    @php
+                                        $tipeKerjaOptions = ['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract'];
+                                        $currentTipe = old('tipe_kerja', $lowongan->tipe_kerja);
+                                    @endphp
+                                    @foreach ($tipeKerjaOptions as $tipe)
+                                        <option value="{{ $tipe }}" {{ $currentTipe == $tipe ? 'selected' : '' }}>{{ $tipe }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- BARIS 4: STATUS (Full Width) -->
+                        <div>
+                            <label for="status" class="block font-medium text-sm text-gray-700">Status Lowongan</label>
+                            <select name="status" id="status" required
+                                class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
+                                <option value="Open" {{ old('status', $lowongan->status) == 'Open' ? 'selected' : '' }}>
+                                    Open (Menerima Lamaran)</option>
+                                <option value="Closed" {{ old('status', $lowongan->status) == 'Closed' ? 'selected' : '' }}>Closed (Ditutup)</option>
+                            </select>
                         </div>
 
                         <!-- Deskripsi (Full Width) -->

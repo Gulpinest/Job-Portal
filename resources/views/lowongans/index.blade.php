@@ -36,10 +36,18 @@
                             $totalPelamar = $lowongan->pelamar_count ?? rand(5, 50); // Placeholder
                             $pelamarBaru = $lowongan->pelamar_new_count ?? rand(1, 5); // Placeholder
 
-                            $statusColor = $lowongan->status == 'Open' ? 'border-green-500 hover:shadow-green-100/50' : 'border-red-500 hover:shadow-red-100/50';
-                            $statusBadge = $lowongan->status == 'Open' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                            // STATUS OPEN/CLOSED (Border Kiri dan Badge Utama)
+                            $status = $lowongan->status;
+                            $statusColor = $status == 'Open' ? 'border-green-500 hover:shadow-green-100/50' : 'border-red-500 hover:shadow-red-100/50';
+                            $statusBadgeClass = $status == 'Open' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                            $statusIcon = $status == 'Open' ? 'fas fa-check-circle' : 'fas fa-lock';
 
-                            $statusIcon = $lowongan->status == 'Open' ? 'fas fa-check-circle' : 'fas fa-lock';
+                            // TIPE KERJA (Badge sekunder)
+                            $tipeKerja = $lowongan->tipe_kerja ?? 'N/A';
+                            $tipeBadgeClass = 'bg-gray-100 text-gray-600';
+
+                            // SKILLS
+                            $skills = is_string($lowongan->keterampilan) ? array_map('trim', explode(',', $lowongan->keterampilan)) : [];
                         @endphp
 
                         <div
@@ -59,10 +67,31 @@
                                     {{ $lowongan->lokasi_kantor ?? 'Remote' }}
                                 </p>
 
-                                <!-- Status Badge -->
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusBadge }}">
-                                    <i class="{{ $statusIcon }} mr-1"></i> {{ $lowongan->status }}
-                                </span>
+                                <!-- Status & Tipe Kerja Badges -->
+                                <div class="flex space-x-2 mb-3">
+                                    {{-- Status Lowongan (Open/Closed) --}}
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $statusBadgeClass }}">
+                                        <i class="{{ $statusIcon }} mr-1"></i> {{ $status }}
+                                    </span>
+
+                                    {{-- Tipe Pekerjaan (Full Time, Remote, dll.) --}}
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $tipeBadgeClass }}">
+                                        <i class="fas fa-clock mr-1"></i> {{ $tipeKerja }}
+                                    </span>
+                                </div>
+
+                                <!-- SKILLS DISPLAY (BARU DITAMBAHKAN) -->
+                                <div class="flex flex-wrap gap-2 text-sm">
+                                    @forelse (array_filter($skills) as $skill)
+                                        <span
+                                            class="px-3 py-0.5 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">
+                                            {{ $skill }}
+                                        </span>
+                                    @empty
+                                        <span class="text-xs text-gray-400 italic">Tidak ada keterampilan utama yang
+                                            dicantumkan.</span>
+                                    @endforelse
+                                </div>
                             </div>
 
                             <!-- Tengah: Metrik Pelamar -->

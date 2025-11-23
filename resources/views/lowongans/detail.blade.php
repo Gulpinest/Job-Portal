@@ -1,5 +1,5 @@
 <x-app-layout>
-    {{-- CATATAN: Dekorasi latar belakang absolut telah dihapus untuk menghindari tumpang tindih dengan navbar. --}}
+    {{-- Memuat FontAwesome (Diasumsikan sudah ada di app-layout) --}}
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -16,6 +16,14 @@
                 </a>
             </div>
 
+            {{-- Bagian Pemberitahuan Sukses/Gagal Lamaran --}}
+            @if (session('success') || session('error'))
+                <div class="mb-6 p-4 text-sm {{ session('success') ? 'text-green-800 rounded-xl bg-green-100 border border-green-400' : 'text-red-800 rounded-xl bg-red-100 border border-red-400' }} shadow-md flex items-center gap-2">
+                    <i class="fas {{ session('success') ? 'fa-check-circle' : 'fa-times-circle' }} text-lg"></i> 
+                    {{ session('success') ?? session('error') }}
+                </div>
+            @endif
+
             {{-- 1. JOB HEADER CARD (Menggabungkan Judul, Logo, Gaji, Lokasi) --}}
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8 mb-8">
                 <div class="flex flex-col sm:flex-row items-start justify-between">
@@ -23,10 +31,7 @@
                     <!-- KIRI: Logo, Posisi, Perusahaan, Lokasi -->
                     <div class="flex items-start space-x-4 flex-grow">
                         <!-- Logo Perusahaan -->
-                        {{-- Mengganti placeholder inisial dengan placeholder logo yang lebih menyerupai gambar --}}
-                        <div
-                            class="w-16 h-16 flex-shrink-0 border border-gray-200 rounded-xl flex items-center justify-center p-2 overflow-hidden">
-                            {{-- Placeholder gambar logo, ganti dengan logic jika ada logo URL --}}
+                        <div class="w-16 h-16 flex-shrink-0 border border-gray-200 rounded-xl flex items-center justify-center p-2 overflow-hidden">
                             <img src="https://placehold.co/64x64/4F46E5/ffffff?text={{ strtoupper(substr($lowongan->company->nama_perusahaan ?? 'C', 0, 1)) }}"
                                 alt="Logo" class="w-full h-full object-contain rounded-lg"
                                 onerror="this.onerror=null;this.src='https://placehold.co/64x64/4F46E5/ffffff?text={{ strtoupper(substr($lowongan->company->nama_perusahaan ?? 'C', 0, 1)) }}';">
@@ -35,15 +40,13 @@
                         <div>
                             <h1 class="text-2xl font-extrabold text-gray-900 mb-1 leading-tight">{{ $lowongan->posisi }}
                             </h1>
-                            <p class="text-sm font-medium text-gray-600">
-                                {{ $lowongan->company->nama_perusahaan ?? 'Perusahaan' }}</p>
+                            <p class="text-sm font-medium text-gray-600">{{ $lowongan->company->nama_perusahaan ?? 'Perusahaan' }}</p>
 
                             <div class="flex items-center space-x-4 text-sm text-gray-500 mt-2">
                                 <span class="flex items-center gap-1">
                                     <i class="fas fa-map-marker-alt text-indigo-500"></i>
-                                    {{ $lowongan->lokasi_kantor ?? 'Jakarta, Indonesia' }}
+                                    {{ $lowongan->lokasi_kantor ?? 'Lokasi Tidak Ditentukan' }}
                                 </span>
-                                {{-- Gaji dipindah ke kanan untuk mengikuti layout gambar --}}
                             </div>
                         </div>
                     </div>
@@ -51,11 +54,18 @@
                     <!-- KANAN: Gaji & Status -->
                     <div class="mt-4 sm:mt-0 flex flex-col items-end space-y-2">
                         <p class="text-xl font-bold text-gray-900">
-                            $ 5k - $ 10k
+                            {{ $lowongan->gaji ?? 'Gaji Kompetitif' }}
                         </p>
+                        @php
+                            // Mengambil data tipe kerja
+                            $tipeKerja = $lowongan->tipe_kerja ?? 'Full Time';
+                            // Tentukan teks dan warna badge
+                            $badgeText = $lowongan->status == 'Closed' ? 'Ditutup' : $tipeKerja;
+                            $badgeClass = $lowongan->status == 'Open' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                        @endphp
                         <span
-                            class="px-3 py-1 text-xs font-semibold rounded-full {{ $lowongan->status == 'Open' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                            {{ $lowongan->status == 'Open' ? 'Full Time' : 'Closed' }}
+                            class="px-3 py-1 text-xs font-semibold rounded-full {{ $badgeClass }}">
+                            {{ $badgeText }}
                         </span>
                     </div>
                 </div>
@@ -66,15 +76,6 @@
 
                 {{-- LEFT COLUMN: Deskripsi, Skills, Requirements --}}
                 <div class="lg:col-span-2 space-y-6">
-
-                    <!-- Alert Notifications -->
-                    @if (session('success') || session('error'))
-                        <div
-                            class="mb-6 p-4 text-sm {{ session('success') ? 'text-green-800 rounded-xl bg-green-100 border border-green-400' : 'text-red-800 rounded-xl bg-red-100 border border-red-400' }} shadow-md flex items-center gap-2">
-                            <i class="fas {{ session('success') ? 'fa-check-circle' : 'fa-times-circle' }} text-lg"></i>
-                            {{ session('success') ?? session('error') }}
-                        </div>
-                    @endif
 
                     <!-- Job Description Card -->
                     <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-200">
@@ -93,24 +94,22 @@
                         </h3>
                         <div class="flex flex-wrap gap-3">
                             @php
-                                $keterampilan = explode(',', $lowongan->keterampilan ?? 'Belum ada data keterampilan');
+                                $keterampilan = explode(',', $lowongan->keterampilan ?? '');
                             @endphp
 
-                            @if (count($keterampilan) > 1 || trim($keterampilan[0]) !== 'Belum ada data keterampilan')
-                                @foreach (array_filter($keterampilan) as $skill)
-                                    <span class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full 
-                                                bg-indigo-100 text-indigo-800 shadow-sm">
-                                        <i class="fas fa-code mr-2 text-indigo-500"></i>
-                                        {{ trim($skill) }}
-                                    </span>
-                                @endforeach
-                            @else
+                            @forelse (array_filter($keterampilan) as $skill)
+                                <span class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full 
+                                    bg-indigo-100 text-indigo-800 shadow-sm">
+                                    <i class="fas fa-code mr-2 text-indigo-500"></i>
+                                    {{ trim($skill) }}
+                                </span>
+                            @empty
                                 <p class="text-gray-500 italic">Keterampilan yang dibutuhkan belum dimasukkan.</p>
-                            @endif
+                            @endforelse
                         </div>
                     </div>
-
-                    {{-- Persyaratan (Simulasi) --}}
+                    
+                    {{-- Persyaratan Tambahan (Simulasi/Placeholder) --}}
                     <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-200">
                         <h3 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-200 text-gray-900">
                             Keterampilan, Pengetahuan & Pengalaman Tambahan
@@ -122,7 +121,6 @@
                             <li>Pendidikan S1/setara di bidang yang relevan.</li>
                         </ul>
                     </div>
-
                 </div>
 
                 {{-- RIGHT COLUMN: Sidebar (Overview, Form Lamaran, Company Info) --}}
@@ -135,29 +133,26 @@
                         </h3>
                         <dl class="space-y-3 text-sm text-gray-700">
                             <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                                <dt class="font-medium flex items-center gap-2"><i
-                                        class="fas fa-calendar-day text-indigo-500"></i> Tanggal Posting:</dt>
+                                <dt class="font-medium flex items-center gap-2"><i class="fas fa-calendar-day text-indigo-500"></i> Tanggal Posting:</dt>
                                 <dd>{{ $lowongan->created_at->format('d M Y') ?? 'N/A' }}</dd>
                             </div>
                             <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                                <dt class="font-medium flex items-center gap-2"><i
-                                        class="fas fa-clock text-indigo-500"></i> Tipe Kerja:</dt>
+                                <dt class="font-medium flex items-center gap-2"><i class="fas fa-clock text-indigo-500"></i> Tipe Kerja:</dt>
+                                {{-- Menggunakan field tipe_kerja yang sebenarnya --}}
                                 <dd>{{ $lowongan->tipe_kerja ?? 'Full-time' }}</dd>
                             </div>
                             <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                                <dt class="font-medium flex items-center gap-2"><i
-                                        class="fas fa-sack-dollar text-indigo-500"></i> Gaji:</dt>
+                                <dt class="font-medium flex items-center gap-2"><i class="fas fa-sack-dollar text-indigo-500"></i> Gaji:</dt>
                                 <dd class="font-bold text-green-600">{{ $lowongan->gaji ?? 'Kompetitif' }}</dd>
                             </div>
                             <div class="flex justify-between items-center pb-2">
-                                <dt class="font-medium flex items-center gap-2"><i
-                                        class="fas fa-hourglass-end text-indigo-500"></i> Batas Lamaran:</dt>
+                                <dt class="font-medium flex items-center gap-2"><i class="fas fa-hourglass-end text-indigo-500"></i> Batas Lamaran:</dt>
                                 <dd>30 Nov 2025</dd>
                             </div>
                         </dl>
                     </div>
 
-                    {{-- COMPANY INFORMATION (BARU DITAMBAHKAN SESUAI GAMBAR) --}}
+                    {{-- COMPANY INFORMATION --}}
                     <div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-200">
                         <h3 class="text-xl font-bold mb-4 border-b pb-2 border-gray-200 text-gray-900">
                             Company Information
@@ -165,7 +160,7 @@
 
                         {{-- Deskripsi Singkat Perusahaan --}}
                         <p class="text-sm text-gray-600 mb-4">
-                            {{ $lowongan->company->deskripsi_singkat ?? 'Perusahaan ini bergerak di bidang Creative Agency dan berlokasi di Jakarta.' }}
+                            {{ $lowongan->company->deskripsi_singkat ?? 'Perusahaan ini bergerak di bidang Creative Agency.' }}
                         </p>
 
                         <dl class="space-y-2 text-sm text-gray-700">
@@ -215,7 +210,7 @@
                                             class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm block w-full transition text-gray-900">
                                             <option value="" disabled selected>-- Pilih Resume Anda --</option>
                                             @foreach ($resumes as $resume)
-                                                <option value="{{ $resume->id_resume }}">{{ $resume->nama_file }}
+                                                <option value="{{ $resume->id_resume }}">{{ $resume->nama_resume }}
                                                     ({{ $resume->created_at->format('d M Y') }})</option>
                                             @endforeach
                                         </select>

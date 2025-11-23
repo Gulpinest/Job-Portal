@@ -16,6 +16,8 @@ class Resume extends Model
         'id_pelamar',
         'nama_resume',
         'skill',
+        'pendidikan_terakhir',
+        'ringkasan_singkat',
         'file_resume',
     ];
 

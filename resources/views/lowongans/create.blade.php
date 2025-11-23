@@ -71,7 +71,7 @@
                             </div>
                         </div>
 
-                        <!-- BARIS 3: Keterampilan & Status -->
+                        <!-- BARIS 3: Keterampilan & Tipe Kerja (DIPISAHKAN DARI STATUS) -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Keterampilan -->
                             <div>
@@ -83,18 +83,32 @@
                                     placeholder="Contoh: Laravel, API, Tailwind, MySQL" />
                             </div>
 
-                            <!-- Status -->
+                            <!-- Tipe Kerja (FIELD BARU) -->
                             <div>
-                                <label for="status" class="block font-medium text-sm text-gray-700">Status
-                                    Lowongan</label>
-                                <select name="status" id="status"
+                                <label for="tipe_kerja" class="block font-medium text-sm text-gray-700">Tipe
+                                    Pekerjaan</label>
+                                <select name="tipe_kerja" id="tipe_kerja" required
                                     class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
-                                    <option value="Open" {{ old('status') == 'Open' ? 'selected' : '' }}>Open (Menerima
-                                        Lamaran)</option>
-                                    <option value="Closed" {{ old('status') == 'Closed' ? 'selected' : '' }}>Closed
-                                        (Ditutup)</option>
+                                    <option value="">-- Pilih Tipe Kerja --</option>
+                                    @php $tipeKerjaOptions = ['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract']; @endphp
+                                    @foreach ($tipeKerjaOptions as $tipe)
+                                        <option value="{{ $tipe }}" {{ old('tipe_kerja') == $tipe ? 'selected' : '' }}>
+                                            {{ $tipe }}</option>
+                                    @endforeach
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- BARIS 4: STATUS (Status Open/Closed) -->
+                        <div>
+                            <label for="status" class="block font-medium text-sm text-gray-700">Status Lowongan</label>
+                            <select name="status" id="status" required
+                                class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
+                                <option value="Open" {{ old('status') == 'Open' ? 'selected' : '' }}>Open (Menerima
+                                    Lamaran)</option>
+                                <option value="Closed" {{ old('status') == 'Closed' ? 'selected' : '' }}>Closed (Ditutup)
+                                </option>
+                            </select>
                         </div>
 
                         <!-- Deskripsi (Full Width) -->

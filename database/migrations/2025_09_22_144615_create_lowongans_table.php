@@ -16,9 +16,19 @@ return new class extends Migration
             $table->unsignedBigInteger('id_company');
             $table->string('judul');
             $table->string('posisi')->nullable();
+            
+            // --- FIELD BARU DITAMBAHKAN SESUAI FORM ---
+            $table->string('lokasi_kantor')->nullable();
+            $table->string('gaji')->nullable();
+            $table->string('keterampilan')->nullable();
+            $table->string('tipe_kerja')->nullable(); // Menggunakan string untuk menyimpan daftar skill yang dipisahkan koma
+            // ------------------------------------------
+
             $table->text('deskripsi')->nullable();
             $table->enum('status', ['Open', 'Closed'])->default('Open');
             $table->timestamps();
+            
+            // Definisi Foreign Key
             $table->foreign('id_company')->references('id_company')->on('companies')->onDelete('cascade');
         });
     }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Resume; // Pastikan Model Resume di-import
+use App\Models\Resume;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Untuk mengambil data user yang login
-use Illuminate\Support\Facades\Storage; // Untuk mengelola file (upload, delete)
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ResumeController extends Controller
 {
@@ -14,14 +14,13 @@ class ResumeController extends Controller
      */
     public function index()
     {
-        // Asumsi: Setiap User memiliki satu relasi 'pelamar'.
+        // Mendapatkan data pelamar yang terautentikasi.
+        // Asumsi: Setiap User memiliki satu relasi 'pelamar' dan objek 'pelamar' memiliki 'id_pelamar'.
         $pelamar = Auth::user()->pelamar;
-
-        // return dd(Auth::user()->isPelamar());
 
         // Ambil semua resume yang 'id_pelamar'-nya cocok, urutkan dari yang terbaru.
         $resumes = Resume::where('id_pelamar', $pelamar->id_pelamar)
-                         ->latest() // Mengurutkan berdasarkan created_at (terbaru dulu)
+                         ->latest()
                          ->get();
 
         return view('resumes.index', compact('resumes'));
@@ -43,8 +42,10 @@ class ResumeController extends Controller
         // 1. Validasi data yang masuk dari form.
         $request->validate([
             'nama_resume' => 'required|string|max:255',
-            'skill' => 'required|string|max:255',
-            'file_resume' => 'required|file|mimes:pdf,doc,docx|max:2048', // File harus pdf/doc/docx, maks 2MB
+            'skill' => 'required|string|max:500', // Diperluas max:255 ke max:500
+            'pendidikan_terakhir' => 'required|string|max:50', // Diperbaiki: Wajib diisi (Sesuai form create)
+            'ringkasan_singkat' => 'nullable|string|max:300', // Diperbaiki: Max 300 karakter
+            'file_resume' => 'required|file|mimes:pdf,doc,docx|max:2048', // Maks 2MB
         ]);
 
         $pelamar = Auth::user()->pelamar;
@@ -57,25 +58,15 @@ class ResumeController extends Controller
             'id_pelamar' => $pelamar->id_pelamar,
             'nama_resume' => $request->nama_resume,
             'skill' => $request->skill,
+            // --- FIELD BARU DITAMBAHKAN ---
+            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            'ringkasan_singkat' => $request->ringkasan_singkat,
+            // -----------------------------
             'file_resume' => $filePath,
         ]);
 
         return redirect()->route('resumes.index')
                          ->with('success', 'Resume baru berhasil ditambahkan!');
-    }
-
-    /**
-     * Menampilkan detail satu resume. (Opsional, bisa jadi tidak terpakai).
-     */
-    public function show(Resume $resume)
-    {
-        // Fitur ini biasanya untuk halaman detail, mungkin bisa dilewati.
-        // Untuk keamanan, pastikan resume ini milik pelamar yang sedang login.
-        if ($resume->id_pelamar !== Auth::user()->pelamar->id_pelamar) {
-            abort(403); // Akses ditolak
-        }
-
-        return view('resumes.show', compact('resume'));
     }
 
     /**
@@ -101,27 +92,28 @@ class ResumeController extends Controller
             abort(403);
         }
 
-        // 1. Validasi data. 'file_resume' tidak 'required' karena bisa saja user hanya ganti nama.
-        $request->validate([
+        // 1. Validasi data. 'file_resume' tidak 'required'.
+        $validatedData = $request->validate([
             'nama_resume' => 'required|string|max:255',
+            'skill' => 'required|string|max:500',
+            'pendidikan_terakhir' => 'required|string|max:50',
+            'ringkasan_singkat' => 'nullable|string|max:300',
             'file_resume' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
-
-        $filePath = $resume->file_resume; // Simpan path file lama sebagai default.
+        
+        $dataToUpdate = $validatedData;
+        unset($dataToUpdate['file_resume']); // Hapus dari array update jika tidak ada file baru
 
         // 2. Cek apakah ada file baru yang diupload.
         if ($request->hasFile('file_resume')) {
             // Hapus file lama dari storage.
             Storage::disk('public')->delete($resume->file_resume);
             // Upload file baru dan simpan path-nya.
-            $filePath = $request->file('file_resume')->store('resumes', 'public');
+            $dataToUpdate['file_resume'] = $request->file('file_resume')->store('resumes', 'public');
         }
 
         // 3. Update data di database.
-        $resume->update([
-            'nama_resume' => $request->nama_resume,
-            'file_resume' => $filePath,
-        ]);
+        $resume->update($dataToUpdate);
 
         return redirect()->route('resumes.index')
                          ->with('success', 'Resume berhasil diperbarui!');
@@ -138,7 +130,9 @@ class ResumeController extends Controller
         }
 
         // 1. Hapus file dari storage terlebih dahulu.
-        Storage::disk('public')->delete($resume->file_resume);
+        if ($resume->file_resume) {
+            Storage::disk('public')->delete($resume->file_resume);
+        }
 
         // 2. Hapus data dari database.
         $resume->delete();
@@ -146,4 +140,6 @@ class ResumeController extends Controller
         return redirect()->route('resumes.index')
                          ->with('success', 'Resume berhasil dihapus!');
     }
+    
+    // (Metode show dihilangkan karena jarang digunakan untuk list file)
 }

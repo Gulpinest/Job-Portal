@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pelamar');
             $table->string('nama_resume');
             $table->string('skill');
+            $table->string('pendidikan_terakhir')->nullable();
+            $table->text('ringkasan_singkat')->nullable();
             $table->text('file_resume')->nullable();
             $table->timestamps();
             $table->foreign('id_pelamar')->references('id_pelamar')->on('pelamars')->onDelete('cascade');

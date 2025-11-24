@@ -117,13 +117,30 @@
                             </select>
                         </div>
 
-                        <!-- Deskripsi (Full Width) -->
-                        <div>
-                            <label for="deskripsi" class="block font-medium text-sm text-gray-700">Deskripsi Pekerjaan
-                                (Gunakan format paragraf atau list)</label>
-                            <textarea id="deskripsi" name="deskripsi" rows="8"
-                                class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="Jelaskan tanggung jawab utama, persyaratan, dan manfaat pekerjaan.">{{ old('deskripsi', $lowongan->deskripsi) }}</textarea>
+                        <!-- Skill yang Dibutuhkan -->
+                        <div class="mt-4">
+                            <label for="skills" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                                Skill yang Dibutuhkan
+                            </label>
+                            <select name="skills[]" id="skills" multiple
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
+                                @foreach ($allSkills as $skill)
+                                    <option value="{{ $skill->nama_skill }}"
+                                        {{ in_array($skill->nama_skill, $selectedSkills) ? 'selected' : '' }}>
+                                        {{ $skill->nama_skill }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-gray-400 mt-2">Gunakan Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu skill.</p>
+                        </div>
+
+                        <div class="flex items-center justify-end mt-6">
+                            <a href="{{ route('lowongans.index') }}"
+                                class="text-sm text-gray-600 dark:text-gray-400 hover:underline">Batal</a>
+                            <button type="submit"
+                                class="ms-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest">
+                                Update Lowongan
+                            </button>
                         </div>
 
                     </div>

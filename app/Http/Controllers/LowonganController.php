@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
+use App\Models\LowonganSkill; 
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -10,18 +12,10 @@ use Illuminate\Validation\Rule;
 
 class LowonganController extends Controller
 {
-    /**
-     * Menampilkan daftar lowongan milik perusahaan yang sedang login (lowongans.index).
-     */
     public function index()
     {
-        // Asumsi user yang login memiliki relasi company
-        $companyId = Auth::user()->company->id_company;
-
-        $lowongans = Lowongan::where('id_company', $companyId)
-                             ->latest()
-                             ->get();
-
+        $company = Auth::user()->company;
+        $lowongans = Lowongan::where('id_company', $company->id_company)->latest()->get();
         return view('lowongans.index', compact('lowongans'));
     }
 
@@ -30,7 +24,10 @@ class LowonganController extends Controller
      */
     public function create()
     {
-        return view('lowongans.create');
+        $allSkills = Skill::all(); // semua skill master
+        $selectedSkills = [];      // belum ada yang dipilih
+
+        return view('lowongans.create', compact('allSkills', 'selectedSkills'));
     }
 
     /**
@@ -41,19 +38,17 @@ class LowonganController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',
-            'lokasi_kantor' => 'nullable|string|max:255',
-            'gaji' => 'nullable|string|max:255',
-            'keterampilan' => 'nullable|string|max:500',
-            'deskripsi' => 'nullable|string',
-            'status' => ['required', Rule::in(['Open', 'Closed'])],
-            // --- VALIDASI FIELD BARU DARI FORM ---
-            'tipe_kerja' => ['required', 'string', Rule::in(['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract'])],
+            'deskripsi' => 'required|string',
+            'status' => 'required|in:Open,Closed',
+            'skills' => 'array', 
+            'skills.*' => 'string|max:255',
         ]);
 
         $companyId = Auth::user()->company->id_company;
 
-        Lowongan::create([
-            'id_company' => $companyId,
+        // Buat lowongan baru
+        $lowongan = Lowongan::create([
+            'id_company' => $company->id_company,
             'judul' => $request->judul,
             'posisi' => $request->posisi,
             'lokasi_kantor' => $request->lokasi_kantor,
@@ -65,29 +60,36 @@ class LowonganController extends Controller
             'tipe_kerja' => $request->tipe_kerja,
         ]);
 
-        return redirect()->route('lowongans.index')
-                         ->with('success', 'Lowongan baru berhasil dibuat!');
+        // Simpan skill yang dibutuhkan ke tabel lowongan_skill
+        if ($request->filled('skills')) {
+            foreach ($request->skills as $skill) {
+                if (!empty($skill)) {
+                    LowonganSkill::create([
+                        'id_lowongan' => $lowongan->id_lowongan,
+                        'nama_skill' => $skill,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }
 
-    /**
-     * Menampilkan form untuk mengedit lowongan (lowongans.edit).
-     */
     public function edit(Lowongan $lowongan)
     {
-        // Keamanan: Pastikan lowongan ini milik perusahaan yang sedang login.
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403, 'Akses Ditolak.');
         }
 
-        return view('lowongans.edit', compact('lowongan'));
+        // 🆕 Ambil skill-skill yang sudah ada agar bisa ditampilkan di form edit
+        $allSkills = Skill::all(); // master skill
+        $selectedSkills = $lowongan->skills->pluck('nama_skill')->toArray();
+
+        return view('lowongans.edit', compact('lowongan', 'allSkills', 'selectedSkills'));
     }
 
-    /**
-     * Memperbarui data lowongan (lowongans.update).
-     */
     public function update(Request $request, Lowongan $lowongan)
     {
-        // Keamanan: Pastikan yang mau update adalah pemilik lowongan.
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403);
         }
@@ -95,27 +97,35 @@ class LowonganController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',
-            'lokasi_kantor' => 'nullable|string|max:255',
-            'gaji' => 'nullable|string|max:255',
-            'keterampilan' => 'nullable|string|max:500',
-            'deskripsi' => 'nullable|string',
-            'status' => ['required', Rule::in(['Open', 'Closed'])],
-            // --- VALIDASI FIELD BARU DARI FORM ---
-            'tipe_kerja' => ['required', 'string', Rule::in(['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract'])],
+            'deskripsi' => 'required|string',
+            'status' => 'required|in:Open,Closed',
+            'skills' => 'array',  
+            'skills.*' => 'string|max:255',
         ]);
 
-        $lowongan->update($request->all());
+        // Update data utama lowongan
+        $lowongan->update($request->only(['judul', 'posisi', 'deskripsi', 'status']));
+
+        // Update skills: hapus lama, simpan ulang
+        LowonganSkill::where('id_lowongan', $lowongan->id_lowongan)->delete();
+
+        if ($request->filled('skills')) {
+            foreach ($request->skills as $skill) {
+                if (!empty($skill)) {
+                    LowonganSkill::create([
+                        'id_lowongan' => $lowongan->id_lowongan,
+                        'nama_skill' => $skill,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('lowongans.index')
                          ->with('success', 'Lowongan berhasil diperbarui!');
     }
 
-    /**
-     * Menghapus lowongan (lowongans.destroy).
-     */
     public function destroy(Lowongan $lowongan)
     {
-        // Keamanan: Pastikan yang mau hapus adalah pemilik lowongan.
         if ($lowongan->id_company !== Auth::user()->company->id_company) {
             abort(403);
         }
@@ -126,69 +136,4 @@ class LowonganController extends Controller
                          ->with('success', 'Lowongan berhasil dihapus!');
     }
 
-
-    // --- METODE UNTUK PELAMAR (pelamar_index) ---
-    /**
-     * Menampilkan daftar lowongan untuk Pelamar dengan fitur filter dan pencarian.
-     */
-    public function pelamar_index(Request $request)
-    {
-        // 1. Inisialisasi query dengan lowongan yang statusnya 'Open'
-        $lowongans = Lowongan::where('status', 'Open')->with('company');
-
-        // 2. LOGIKA PENCARIAN (Search Bar di bagian atas)
-        $searchKeyword = $request->input('search_keyword');
-        $searchLocation = $request->input('search_location');
-
-        if ($searchKeyword) {
-            $lowongans->where(function ($query) use ($searchKeyword) {
-                $query->where('judul', 'like', '%' . $searchKeyword . '%')
-                      ->orWhere('posisi', 'like', '%' . $searchKeyword . '%')
-                      ->orWhere('keterampilan', 'like', '%' . $searchKeyword . '%');
-            });
-        }
-        
-        if ($searchLocation) {
-            $lowongans->where('lokasi_kantor', 'like', '%' . $searchLocation . '%');
-        }
-
-        // 3. LOGIKA FILTER SIDEBAR
-        
-        // Filter Job Type
-        $jobTypes = $request->input('job_type', []);
-        if (!empty($jobTypes)) {
-            $lowongans->whereIn('tipe_kerja', $jobTypes); // Menggunakan tipe_kerja untuk filter
-        }
-
-        // Filter Experience (misalnya: 2-3 Years)
-        $experience = $request->input('experience');
-        if ($experience) {
-            // Logika filter berdasarkan pengalaman
-        }
-
-        // Filter Posted Within (misalnya: last_7_days)
-        $postedWithin = $request->input('posted_within');
-        if ($postedWithin) {
-            // Logika filter berdasarkan tanggal posting
-        }
-
-        // 4. LOGIKA SORTING (Dropdown di header)
-        $sort = $request->input('sort');
-        if ($sort == 'Terbaru') {
-            $lowongans->latest();
-        } elseif ($sort == 'Gaji Tertinggi') {
-            // Logika sorting berdasarkan gaji (mungkin memerlukan parsing string gaji)
-            // Contoh: $lowongans->orderBy(DB::raw('CAST(SUBSTRING_INDEX(gaji, "-", 1) AS UNSIGNED)'), 'desc');
-        } else {
-            $lowongans->orderBy('judul', 'asc');
-        }
-
-        // 5. Eksekusi query
-        $lowongans = $lowongans->get();
-
-        return view('lowongans.index_pelamar', compact('lowongans', 'request'));
-    }
-    
-    // Metode show_lowongan atau detail lowongan
-    // ...
 }

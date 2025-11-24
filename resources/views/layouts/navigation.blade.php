@@ -15,13 +15,25 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @auth
-                        @if(auth()->user()->isAdmin())
-                            {{-- Link Admin Dashboard --}}
-                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
-                                {{ __('Admin Panel') }}
-                            </x-nav-link>
+                    @if(auth()->user()->isPelamar())
+                        {{-- Link Resume --}}
+                        <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
+                            {{ __('Resume') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
+                            {{ __('Skill Saya') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.*')">
+                            {{ __('Lowongan') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.*')">
+                            {{ __('Lamaran Saya') }}
+                        </x-nav-link>
+                    @elseif (auth()->user()->isCompany())
+                        {{-- Link Lowongan --}}
+                        <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
+                            {{ __('Lowongan') }}
+                        </x-nav-link>
 
                         @elseif(auth()->user()->isPelamar())
                             {{-- Link Resume (Pelamar) --}}
@@ -135,26 +147,13 @@
                         {{ __('Admin Panel') }}
                     </x-responsive-nav-link>
 
-                @elseif(auth()->user()->isPelamar())
-                    <x-responsive-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('resumes.*') ? 'text-indigo-600 font-bold' : '' }}">
-                        {{ __('Resume') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('lowongans.pelamar_index')"
-                        :active="request()->routeIs('lowongans.pelamar_index')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('lowongans.pelamar_index') ? 'text-indigo-600 font-bold' : '' }}">
-                        {{ __('Lowongan') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('lowongans.lamaran_saya')"
-                        :active="request()->routeIs('lowongans.lamaran_saya')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('lowongans.lamaran_saya') ? 'text-indigo-600 font-bold' : '' }}">
-                        {{ __('Lamaran Saya') }}
-                    </x-responsive-nav-link>
-                @elseif (auth()->user()->isCompany())
-                    <x-responsive-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('lowongans.index') ? 'text-indigo-600 font-bold' : '' }}">
-                        {{ __('Lowongan') }}
-                    </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
+                {{ __('Skill Saya') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
+                {{ __('Lowongan') }}
+            </x-responsive-nav-link>
 
                     {{-- Link Jadwal Interview (Mobile) --}}
                     <x-responsive-nav-link :href="route('interview-schedules.index')"

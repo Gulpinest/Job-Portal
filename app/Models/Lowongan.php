@@ -40,4 +40,37 @@ class Lowongan extends Model
     {
         return $this->hasMany(InterviewSchedule::class, 'id_lowongan');
     }
+
+    public function skills()
+    {
+        return $this->hasMany(LowonganSkill::class, 'id_lowongan', 'id_lowongan');
+    }
+
+    // Filter berdasarkan kecocokan skill pelamar
+    public function scopeMatchSkills($query, $pelamarSkills)
+    {
+        return $query->whereHas('skills', function ($q) use ($pelamarSkills) {
+            $q->whereIn('nama_skill', $pelamarSkills);
+        });
+    }
+
+    // Filter berdasarkan pencarian umum (judul, posisi)
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where(function ($q) use ($keyword) {
+            $q->where('judul', 'like', '%' . $keyword . '%')
+            ->orWhere('posisi', 'like', '%' . $keyword . '%');
+        });
+    }
+
+    // Filter berdasarkan status (Open / Closed)
+    public function scopeStatus($query, $status)
+    {
+        if (!empty($status)) {
+            return $query->where('status', $status);
+        }
+
+        return $query;
+    }
+
 }

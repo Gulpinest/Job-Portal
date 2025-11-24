@@ -19,7 +19,7 @@ class LowonganController extends Controller
             ->with('skills')
             ->withCount('lamarans')
             ->latest()
-            ->paginate(10);
+            ->paginate(5);
         return view('lowongans.index', compact('lowongans'));
     }
 

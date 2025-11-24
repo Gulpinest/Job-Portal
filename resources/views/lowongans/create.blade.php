@@ -108,9 +108,17 @@
                             </label>
 
                             @if($allSkills->count() > 0)
-                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <!-- Search Input -->
+                                <div class="mb-4">
+                                    <input type="text" id="skillSearch" placeholder="Cari skill..." 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                                    />
+                                </div>
+
+                                <!-- Skills Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="skillsContainer">
                                     @foreach ($allSkills as $skill)
-                                        <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition">
+                                        <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition skill-item" data-skill="{{ strtolower($skill->nama_skill) }}">
                                             <input type="checkbox" name="skills[]" value="{{ $skill->nama_skill }}"
                                                 {{ in_array($skill->nama_skill, $selectedSkills) ? 'checked' : '' }}
                                                 class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300">
@@ -118,24 +126,18 @@
                                         </label>
                                     @endforeach
                                 </div>
+
+                                <!-- No Results Message -->
+                                <div id="noResults" class="hidden mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <p class="text-sm text-yellow-800">Skill tidak ditemukan</p>
+                                </div>
+
                                 <p class="text-xs text-gray-500 mt-3">Pilih satu atau lebih skill yang diperlukan untuk posisi ini.</p>
                             @else
                                 <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                                     <p class="text-sm text-amber-800">Belum ada skill master. <a href="{{ route('admin.skills.index') }}" class="font-semibold hover:underline">Buat skill master terlebih dahulu</a></p>
                                 </div>
                             @endif
-                        </div>
-
-                        <div class="flex items-center justify-end mt-8">
-                            <a href="{{ route('lowongans.index') }}"
-                                class="text-sm font-medium text-gray-600 hover:text-gray-900 transition">Batal</a>
-                            <button type="submit"
-                                class="ms-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-indigo-700 transition shadow-md">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Simpan Lowongan
-                            </button>
                         </div>
 
                     </div>
@@ -156,3 +158,34 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('skillSearch');
+    const skillItems = document.querySelectorAll('.skill-item');
+    const noResults = document.getElementById('noResults');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            skillItems.forEach(item => {
+                const skillName = item.dataset.skill || item.textContent.toLowerCase();
+                
+                if (skillName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 && searchTerm ? 'block' : 'none';
+            }
+        });
+    }
+});
+</script>

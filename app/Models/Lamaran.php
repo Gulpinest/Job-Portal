@@ -39,4 +39,10 @@ class Lamaran extends Model
     {
         return $this->hasMany(InterviewSchedule::class, 'id_lamaran');
     }
+
+    public function Resume()
+    {
+    return $this->belongsTo(Resume::class, 'id_resume', 'id_resume');
+    }
+
 }

@@ -110,7 +110,7 @@
                             @if($allSkills->count() > 0)
                                 <!-- Search Input -->
                                 <div class="mb-4">
-                                    <input type="text" id="skillSearch" placeholder="Cari skill..." 
+                                    <input type="text" id="skillSearch" placeholder="Cari skill..."
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                                     />
                                 </div>
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             skillItems.forEach(item => {
                 const skillName = item.dataset.skill || item.textContent.toLowerCase();
-                
+
                 if (skillName.includes(searchTerm)) {
                     item.style.display = 'flex';
                     visibleCount++;

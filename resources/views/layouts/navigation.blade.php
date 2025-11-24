@@ -168,22 +168,22 @@
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
-                    
+
                     <x-responsive-nav-link :href="route('admin.skills.index')" :active="request()->routeIs('admin.skills.*')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Manajemen Skill') }}
                     </x-responsive-nav-link>
-                    
+
                     <x-responsive-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Verifikasi Company') }}
                     </x-responsive-nav-link>
-                    
+
                     <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Users') }}
                     </x-responsive-nav-link>
-                    
+
                     <x-responsive-nav-link :href="route('admin.logs')" :active="request()->routeIs('admin.logs*')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Logs') }}

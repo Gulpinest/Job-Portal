@@ -27,6 +27,8 @@ class SkillController extends Controller
     {
         $request->validate([
             'nama_skill' => 'required|string|max:100',
+            'level' => 'required|in:Beginner,Intermediate,Advanced,Expert',
+            'years_experience' => 'nullable|integer|min:0|max:70',
         ]);
 
         $pelamar = Pelamar::where('id_user', Auth::id())->first();
@@ -38,6 +40,8 @@ class SkillController extends Controller
         Skill::create([
             'id_pelamar' => $pelamar->id_pelamar,
             'nama_skill' => $request->nama_skill,
+            'level' => $request->level,
+            'years_experience' => $request->years_experience ?? 0,
         ]);
 
         return redirect()->route('skills.index')->with('success', 'Skill berhasil ditambahkan.');
@@ -58,6 +62,8 @@ class SkillController extends Controller
     {
         $request->validate([
             'nama_skill' => 'required|string|max:100',
+            'level' => 'required|in:Beginner,Intermediate,Advanced,Expert',
+            'years_experience' => 'nullable|integer|min:0|max:70',
         ]);
 
         $pelamar = Pelamar::where('id_user', Auth::id())->first();
@@ -68,6 +74,8 @@ class SkillController extends Controller
 
         $skill->update([
             'nama_skill' => $request->nama_skill,
+            'level' => $request->level,
+            'years_experience' => $request->years_experience ?? 0,
         ]);
 
         return redirect()->route('skills.index')->with('success', 'Skill berhasil diperbarui.');

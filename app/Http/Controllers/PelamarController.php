@@ -29,7 +29,10 @@ class PelamarController extends Controller
             ]);
         }
 
-        return view('pelamar.show', compact('pelamar'));
+        // Load skills
+        $skills = $pelamar->skills;
+
+        return view('pelamar.show', compact('pelamar', 'skills'));
     }
 
     // Form edit profil pelamar

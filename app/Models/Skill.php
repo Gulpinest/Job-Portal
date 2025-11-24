@@ -15,6 +15,8 @@ class Skill extends Model
     protected $fillable = [
         'id_pelamar',
         'nama_skill',
+        'level',
+        'years_experience',
     ];
 
     public function pelamar(): BelongsTo

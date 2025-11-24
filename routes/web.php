@@ -8,6 +8,7 @@ use App\Http\Controllers\InterviewScheduleController;
 use App\Http\Controllers\AdminSkillController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CompanyDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\PelamarLowonganController;
@@ -48,6 +49,7 @@ Route::middleware('admin')->group(function () {
 
 // Route yang hanya bisa diakses oleh company
 Route::middleware('company')->group(function () {
+    Route::get('/company/dashboard', [CompanyDashboardController::class, 'dashboard'])->name('company.dashboard');
     Route::resource('lowongans', LowonganController::class);
     Route::resource('interview-schedules', InterviewScheduleController::class);
 });

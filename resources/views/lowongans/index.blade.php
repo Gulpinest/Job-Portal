@@ -34,23 +34,35 @@
 
                 {{-- Tombol Utama --}}
                 <div class="flex justify-between items-center pb-4 border-b border-gray-100">
-                    <h3 class="text-xl font-bold text-gray-900">Lowongan Aktif ({{ count($lowongans) }})</h3>
-                    <a href="{{ route('lowongans.create') }}"
-                        class="inline-flex items-center px-6 py-2 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
-                            </path>
-                        </svg>
-                        Buat Lowongan Baru
-                    </a>
+                    <h3 class="text-xl font-bold text-gray-900">Lowongan Aktif ({{ $lowongans->total() }})</h3>
+                    @if (Auth::user()->company && Auth::user()->company->is_verified)
+                        <a href="{{ route('lowongans.create') }}"
+                            class="inline-flex items-center px-6 py-2 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                                </path>
+                            </svg>
+                            Buat Lowongan Baru
+                        </a>
+                    @else
+                        <button disabled
+                            class="inline-flex items-center px-6 py-2 bg-gray-400 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-wider cursor-not-allowed opacity-75 shadow-md"
+                            title="Perusahaan Anda belum diverifikasi">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                                </path>
+                            </svg>
+                            Buat Lowongan Baru
+                        </button>
+                    @endif
                 </div>
 
                 <div class="space-y-4">
                     @forelse ($lowongans as $lowongan)
                         @php
-                            // Asumsi Anda memiliki data hitungan pelamar di model $lowongan
-                            $totalPelamar = $lowongan->pelamar_count ?? rand(5, 50); // Placeholder
-                            $pelamarBaru = $lowongan->pelamar_new_count ?? rand(1, 5); // Placeholder
+                            // Pelamar count dari eager loading
+                            $totalPelamar = $lowongan->lamarans_count;
+                            $pelamarBaru = $lowongan->pelamar_baru_count;
 
                             // STATUS OPEN/CLOSED (Border Kiri dan Badge Utama)
                             $status = $lowongan->status;
@@ -61,9 +73,6 @@
                             // TIPE KERJA (Badge sekunder)
                             $tipeKerja = $lowongan->tipe_kerja ?? 'N/A';
                             $tipeBadgeClass = 'bg-gray-100 text-gray-600';
-
-                            // SKILLS
-                            $skills = is_string($lowongan->keterampilan) ? array_map('trim', explode(',', $lowongan->keterampilan)) : [];
                         @endphp
 
                         <div
@@ -96,15 +105,15 @@
                                     </span>
                                 </div>
 
-                                <!-- SKILLS DISPLAY (BARU DITAMBAHKAN) -->
+                                <!-- SKILLS DISPLAY -->
                                 <div class="flex flex-wrap gap-2 text-sm">
-                                    @forelse (array_filter($skills) as $skill)
+                                    @forelse ($lowongan->skills as $skill)
                                         <span
                                             class="px-3 py-0.5 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-full">
-                                            {{ $skill }}
+                                            {{ $skill->nama_skill }}
                                         </span>
                                     @empty
-                                        <span class="text-xs text-gray-400 italic">Tidak ada keterampilan utama yang
+                                        <span class="text-xs text-gray-400 italic">Tidak ada keterampilan yang
                                             dicantumkan.</span>
                                     @endforelse
                                 </div>
@@ -156,16 +165,47 @@
                             <p class="text-gray-900 font-semibold text-lg">Anda belum memiliki lowongan pekerjaan yang
                                 diposting.</p>
                             <p class="text-sm text-gray-500 mt-2">Mulai rekrutmen dengan membuat lowongan baru.</p>
-                            <a href="{{ route('lowongans.create') }}"
-                                class="mt-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-indigo-700 transition shadow-md">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Buat Lowongan Pertama Anda
-                            </a>
+                            @if (Auth::user()->company && Auth::user()->company->is_verified)
+                                <a href="{{ route('lowongans.create') }}"
+                                    class="mt-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-indigo-700 transition shadow-md">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Buat Lowongan Pertama Anda
+                                </a>
+                            @else
+                                <button disabled
+                                    class="mt-4 inline-flex items-center px-6 py-3 bg-gray-400 border border-transparent rounded-xl font-semibold text-sm text-white cursor-not-allowed opacity-75 shadow-md"
+                                    title="Perusahaan Anda belum diverifikasi">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Buat Lowongan Pertama Anda
+                                </button>
+                            @endif
                         </div>
                     @endforelse
+
+                {{-- Pagination --}}
+                @if ($lowongans->hasPages())
+                    <div class="mt-8">
+                        <div class="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-gray-200 shadow-sm">
+                            <div class="text-sm text-gray-600">
+                                Menampilkan <span class="font-semibold">{{ $lowongans->firstItem() }}</span> 
+                                hingga 
+                                <span class="font-semibold">{{ $lowongans->lastItem() }}</span> 
+                                dari 
+                                <span class="font-semibold">{{ $lowongans->total() }}</span> 
+                                lowongan
+                            </div>
+                            <div>
+                                {{ $lowongans->links() }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 </div>
             </div>
         </div>

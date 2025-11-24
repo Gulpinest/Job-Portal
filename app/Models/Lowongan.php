@@ -19,12 +19,13 @@ class Lowongan extends Model
         'posisi',
         'lokasi_kantor',
         'gaji',
-        'keterampilan',
         'tipe_kerja',
         'deskripsi',
         'persyaratan_tambahan',
         'status',
     ];
+
+    protected $appends = ['pelamar_baru_count'];
 
     public function company(): BelongsTo
     {
@@ -44,6 +45,17 @@ class Lowongan extends Model
     public function skills()
     {
         return $this->hasMany(LowonganSkill::class, 'id_lowongan', 'id_lowongan');
+    }
+
+    /**
+     * Get count of new/pending lamarans
+     * Uses status_ajuan = 'Pending' to identify new applications
+     */
+    public function getPelamarBaruCountAttribute()
+    {
+        return $this->lamarans()
+            ->where('status_ajuan', 'Pending')
+            ->count();
     }
 
     // Filter berdasarkan kecocokan skill pelamar

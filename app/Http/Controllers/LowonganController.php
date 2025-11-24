@@ -15,7 +15,11 @@ class LowonganController extends Controller
     public function index()
     {
         $company = Auth::user()->company;
-        $lowongans = Lowongan::where('id_company', $company->id_company)->latest()->get();
+        $lowongans = Lowongan::where('id_company', $company->id_company)
+            ->with('skills')
+            ->withCount('lamarans')
+            ->latest()
+            ->paginate(10);
         return view('lowongans.index', compact('lowongans'));
     }
 
@@ -56,7 +60,6 @@ class LowonganController extends Controller
             'posisi' => 'required|string|max:255',
             'lokasi_kantor' => 'required|string|max:255',
             'gaji' => 'nullable|string|max:255',
-            'keterampilan' => 'nullable|string',
             'tipe_kerja' => 'required|string|max:50',
             'persyaratan_tambahan' => 'nullable|string',
             'deskripsi' => 'required|string',
@@ -74,7 +77,6 @@ class LowonganController extends Controller
             'posisi' => $request->posisi,
             'lokasi_kantor' => $request->lokasi_kantor,
             'gaji' => $request->gaji,
-            'keterampilan' => $request->keterampilan,
             'tipe_kerja' => $request->tipe_kerja,
             'persyaratan_tambahan' => $request->persyaratan_tambahan,
             'deskripsi' => $request->deskripsi,
@@ -120,7 +122,6 @@ class LowonganController extends Controller
             'posisi' => 'required|string|max:255',
             'lokasi_kantor' => 'required|string|max:255',
             'gaji' => 'nullable|string|max:255',
-            'keterampilan' => 'nullable|string',
             'tipe_kerja' => 'required|string|max:50',
             'persyaratan_tambahan' => 'nullable|string',
             'deskripsi' => 'required|string',
@@ -130,7 +131,7 @@ class LowonganController extends Controller
         ]);
 
         // Update data utama lowongan
-        $lowongan->update($request->only(['judul', 'posisi', 'lokasi_kantor', 'gaji', 'keterampilan', 'tipe_kerja', 'persyaratan_tambahan', 'deskripsi', 'status']));
+        $lowongan->update($request->only(['judul', 'posisi', 'lokasi_kantor', 'gaji', 'tipe_kerja', 'persyaratan_tambahan', 'deskripsi', 'status']));
 
         // Update skills: hapus lama, simpan ulang
         LowonganSkill::where('id_lowongan', $lowongan->id_lowongan)->delete();

@@ -75,35 +75,22 @@
                             </div>
                         </div>
 
-                        <!-- BARIS 3: Keterampilan & Tipe Kerja (DIPISAHKAN) -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Keterampilan -->
-                            <div>
-                                <label for="keterampilan" class="block font-medium text-sm text-gray-700">Keterampilan
-                                    Utama (Pisahkan dengan koma)</label>
-                                <input id="keterampilan" name="keterampilan" type="text"
-                                    class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    value="{{ old('keterampilan', $lowongan->keterampilan ?? '') }}"
-                                    placeholder="Contoh: Laravel, API, Tailwind, MySQL" />
-                            </div>
-
-                            <!-- Tipe Kerja (BARU DITAMBAHKAN) -->
-                            <div>
-                                <label for="tipe_kerja" class="block font-medium text-sm text-gray-700">Tipe
-                                    Pekerjaan</label>
-                                <select name="tipe_kerja" id="tipe_kerja" required
-                                    class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
-                                    <option value="">-- Pilih Tipe Kerja --</option>
-                                    @php
-                                        $tipeKerjaOptions = ['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract'];
-                                        $currentTipe = old('tipe_kerja', $lowongan->tipe_kerja);
-                                    @endphp
-                                    @foreach ($tipeKerjaOptions as $tipe)
-                                        <option value="{{ $tipe }}" {{ $currentTipe == $tipe ? 'selected' : '' }}>{{ $tipe }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <!-- BARIS 3: Tipe Kerja -->
+                        <div>
+                            <label for="tipe_kerja" class="block font-medium text-sm text-gray-700">Tipe
+                                Pekerjaan</label>
+                            <select name="tipe_kerja" id="tipe_kerja" required
+                                class="block mt-1 w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900">
+                                <option value="">-- Pilih Tipe Kerja --</option>
+                                @php
+                                    $tipeKerjaOptions = ['Full Time', 'Part Time', 'Remote', 'Freelance', 'Contract'];
+                                    $currentTipe = old('tipe_kerja', $lowongan->tipe_kerja);
+                                @endphp
+                                @foreach ($tipeKerjaOptions as $tipe)
+                                    <option value="{{ $tipe }}" {{ $currentTipe == $tipe ? 'selected' : '' }}>{{ $tipe }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <!-- BARIS 4: STATUS (Full Width) -->
@@ -118,27 +105,41 @@
                         </div>
 
                         <!-- Skill yang Dibutuhkan -->
-                        <div class="mt-4">
-                            <label for="skills" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
+                        <div class="mt-6 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+                            <label class="block font-bold text-sm text-gray-900 mb-4">
+                                <svg class="w-4 h-4 inline mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5.951-1.488 5.951 1.488a1 1 0 001.169-1.409l-7-14z"></path>
+                                </svg>
                                 Skill yang Dibutuhkan
                             </label>
-                            <select name="skills[]" id="skills" multiple
-                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
-                                @foreach ($allSkills as $skill)
-                                    <option value="{{ $skill->nama_skill }}"
-                                        {{ in_array($skill->nama_skill, $selectedSkills) ? 'selected' : '' }}>
-                                        {{ $skill->nama_skill }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p class="text-xs text-gray-400 mt-2">Gunakan Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu skill.</p>
+                            
+                            @if($allSkills->count() > 0)
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    @foreach ($allSkills as $skill)
+                                        <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition">
+                                            <input type="checkbox" name="skills[]" value="{{ $skill->nama_skill }}"
+                                                {{ in_array($skill->nama_skill, $selectedSkills) ? 'checked' : '' }}
+                                                class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300">
+                                            <span class="ml-3 text-sm text-gray-700">{{ $skill->nama_skill }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                <p class="text-xs text-gray-500 mt-3">Pilih satu atau lebih skill yang diperlukan untuk posisi ini.</p>
+                            @else
+                                <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                                    <p class="text-sm text-amber-800">Belum ada skill master. <a href="{{ route('admin.skills.index') }}" class="font-semibold hover:underline">Buat skill master terlebih dahulu</a></p>
+                                </div>
+                            @endif
                         </div>
 
-                        <div class="flex items-center justify-end mt-6">
+                        <div class="flex items-center justify-end mt-8">
                             <a href="{{ route('lowongans.index') }}"
-                                class="text-sm text-gray-600 dark:text-gray-400 hover:underline">Batal</a>
+                                class="text-sm font-medium text-gray-600 hover:text-gray-900 transition">Batal</a>
                             <button type="submit"
-                                class="ms-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest">
+                                class="ms-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-xl font-semibold text-sm text-white hover:bg-indigo-700 transition shadow-md">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
                                 Update Lowongan
                             </button>
                         </div>

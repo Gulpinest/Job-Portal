@@ -1,19 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Tambah Skill') }}
+        <h2 class="font-bold text-2xl text-gray-900 leading-tight">
+            {{ __('Tambah Skill Baru') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+    <div class="py-6">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
+
+                <h3 class="text-xl font-extrabold text-gray-900 mb-6 border-b pb-4">
+                    Pilih Skill dari Daftar yang Tersedia
+                </h3>
 
                 {{-- Pesan Error --}}
                 @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
-                        <div class="font-medium text-red-600 dark:text-red-400">Terjadi kesalahan:</div>
-                        <ul class="mt-2 text-sm text-red-600 dark:text-red-400 list-disc list-inside">
+                    <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 shadow-sm rounded-r-lg">
+                        <div class="font-bold">{{ __('Whoops! Ada Kesalahan.') }}</div>
+                        <ul class="mt-3 list-disc list-inside text-sm">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -22,9 +26,9 @@
                 @endif
 
                 {{-- Info Message --}}
-                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
-                    <p class="text-blue-800 dark:text-blue-200 text-sm">
-                        Pilih skill dari daftar yang tersedia. Administrator dapat menambahkan skill baru.
+                <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700 shadow-sm rounded-r-lg">
+                    <p class="text-sm font-medium">
+                        💡 Pilih skill dari daftar yang tersedia dan tentukan level keahlian Anda. Administrator dapat menambahkan skill baru.
                     </p>
                 </div>
 
@@ -33,70 +37,74 @@
 
                     {{-- Available Skills --}}
                     <div class="mb-8">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-                            Pilih Skill Anda <span class="text-red-600">*</span>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">
+                            Pilih Skill Anda <span class="text-red-600 font-bold">*</span>
                         </label>
 
-                        <div class="space-y-3">
+                        <div class="space-y-3 max-h-96 overflow-y-auto pr-4">
                             @forelse($allSkills as $skill)
-                                <div class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                    <div class="flex items-center h-5">
-                                        <input type="checkbox" id="skill_{{ $skill->id_skill }}"
-                                               name="skills[{{ $skill->id_skill }}][id_skill]"
-                                               value="{{ $skill->id_skill }}"
-                                               class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                               @if(in_array($skill->id_skill, $selectedSkillIds ?? []))
-                                                   checked
-                                               @endif
-                                               onchange="toggleSkillDetails({{ $skill->id_skill }})">
-                                    </div>
-                                    <div class="ml-4 flex-1">
-                                        <label for="skill_{{ $skill->id_skill }}" class="block font-medium text-gray-900 dark:text-gray-100 cursor-pointer">
-                                            {{ $skill->nama_skill }}
-                                        </label>
-                                        @if($skill->deskripsi)
-                                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                {{ $skill->deskripsi }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                {{-- Skill Details (Level & Experience) --}}
-                                <div id="details_{{ $skill->id_skill }}" class="ml-8 mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hidden">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {{-- Level --}}
-                                        <div>
-                                            <label for="level_{{ $skill->id_skill }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Level Keahlian
-                                            </label>
-                                            <select id="level_{{ $skill->id_skill }}"
-                                                    name="skills[{{ $skill->id_skill }}][level]"
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                                                <option value="Beginner">Pemula (Beginner)</option>
-                                                <option value="Intermediate" selected>Menengah (Intermediate)</option>
-                                                <option value="Advanced">Lanjut (Advanced)</option>
-                                                <option value="Expert">Ahli (Expert)</option>
-                                            </select>
+                                <div class="p-4 border-2 border-gray-200 rounded-xl transition">
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-6 mt-1">
+                                            <input type="checkbox" 
+                                                   id="skill_{{ $skill->id_skill }}"
+                                                   name="skills[{{ $skill->id_skill }}][id_skill]"
+                                                   value="{{ $skill->id_skill }}"
+                                                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 cursor-pointer"
+                                                   @if(in_array($skill->id_skill, $selectedSkillIds ?? []))
+                                                       checked
+                                                   @endif
+                                                   onchange="toggleSkillDetails({{ $skill->id_skill }})">
                                         </div>
-
-                                        {{-- Years of Experience --}}
-                                        <div>
-                                            <label for="experience_{{ $skill->id_skill }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Tahun Pengalaman
+                                        <div class="ml-4 flex-1 cursor-pointer" onclick="toggleCheckbox({{ $skill->id_skill }})">
+                                            <label for="skill_{{ $skill->id_skill }}" class="block font-semibold text-gray-900 cursor-pointer">
+                                                {{ $skill->nama_skill }}
                                             </label>
-                                            <input type="number"
-                                                   id="experience_{{ $skill->id_skill }}"
-                                                   name="skills[{{ $skill->id_skill }}][years_experience]"
-                                                   min="0" max="70"
-                                                   value="0"
-                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                            @if($skill->deskripsi)
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    {{ $skill->deskripsi }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    {{-- Skill Details (Level & Experience) --}}
+                                    <div id="details_{{ $skill->id_skill }}" class="mt-4 ml-10 p-4 bg-indigo-50 rounded-lg border border-indigo-200 hidden">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {{-- Level --}}
+                                            <div>
+                                                <label for="level_{{ $skill->id_skill }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                                    Level Keahlian
+                                                </label>
+                                                <select id="level_{{ $skill->id_skill }}"
+                                                        name="skills[{{ $skill->id_skill }}][level]"
+                                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                    <option value="Beginner">🟢 Pemula (Beginner)</option>
+                                                    <option value="Intermediate" selected>🟡 Menengah (Intermediate)</option>
+                                                    <option value="Advanced">🟠 Lanjut (Advanced)</option>
+                                                    <option value="Expert">🔴 Ahli (Expert)</option>
+                                                </select>
+                                            </div>
+
+                                            {{-- Years of Experience --}}
+                                            <div>
+                                                <label for="experience_{{ $skill->id_skill }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                                    Tahun Pengalaman
+                                                </label>
+                                                <input type="number"
+                                                       id="experience_{{ $skill->id_skill }}"
+                                                       name="skills[{{ $skill->id_skill }}][years_experience]"
+                                                       min="0" max="70"
+                                                       value="0"
+                                                       class="w-full px-3 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             @empty
-                                <div class="p-4 text-center text-gray-500 dark:text-gray-400">
-                                    <p>Belum ada skill yang tersedia. Hubungi administrator.</p>
+                                <div class="p-8 text-center text-gray-500 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                                    <p class="font-medium">Belum ada skill yang tersedia</p>
+                                    <p class="text-sm mt-1">Hubungi administrator untuk menambahkan skill baru.</p>
                                 </div>
                             @endforelse
                         </div>
@@ -105,14 +113,15 @@
                     </div>
 
                     {{-- Form Actions --}}
-                    <div class="flex items-center justify-end mt-8 border-t pt-6">
+                    <div class="flex items-center justify-end pt-6 border-t border-gray-100 space-x-3">
                         <a href="{{ route('skills.index') }}"
-                            class="mr-3 inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md text-sm hover:bg-gray-400 dark:hover:bg-gray-600 transition">
-                            Batal
+                            class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                            {{ __('Batal') }}
                         </a>
-                        <x-primary-button>
+                        <button type="submit"
+                            class="px-6 py-2.5 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md">
                             {{ __('Simpan Skill') }}
-                        </x-primary-button>
+                        </button>
                     </div>
                 </form>
 
@@ -121,6 +130,12 @@
     </div>
 
     <script>
+        function toggleCheckbox(skillId) {
+            const checkbox = document.getElementById('skill_' + skillId);
+            checkbox.checked = !checkbox.checked;
+            toggleSkillDetails(skillId);
+        }
+
         function toggleSkillDetails(skillId) {
             const checkbox = document.getElementById('skill_' + skillId);
             const details = document.getElementById('details_' + skillId);

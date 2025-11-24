@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\Lowongan;
+use App\Models\Pelamar;
 use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -33,13 +34,27 @@ class TestDataSeeder extends Seeder
         );
 
         // 0.5. Create test pelamar user
-        User::firstOrCreate(
+        $pelamarUser = User::firstOrCreate(
             ['email' => 'pelamar@test.com'],
             [
                 'name' => 'Pelamar Uji',
                 'email' => 'pelamar@test.com',
                 'password' => Hash::make('password'),
                 'role_id' => $pelamarRole->id,
+            ]
+        );
+
+        // 0.6. Create pelamar profile if not exists
+        Pelamar::firstOrCreate(
+            ['id_user' => $pelamarUser->id],
+            [
+                'id_user' => $pelamarUser->id,
+                'nama_pelamar' => 'Pelamar Uji',
+                'status_pekerjaan' => 'Sedang Mencari Kerja',
+                'no_telp' => '081234567890',
+                'alamat' => 'Jakarta, Indonesia',
+                'jenis_kelamin' => 'Laki-laki',
+                'tgl_lahir' => '2000-01-01',
             ]
         );
 

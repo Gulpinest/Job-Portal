@@ -17,6 +17,10 @@ class ResumeController extends Controller
         // Mendapatkan data pelamar yang terautentikasi.
         // Asumsi: Setiap User memiliki satu relasi 'pelamar' dan objek 'pelamar' memiliki 'id_pelamar'.
         $pelamar = Auth::user()->pelamar;
+        
+        if (!$pelamar) {
+            abort(403, 'Anda tidak memiliki profil pelamar');
+        }
 
         // Ambil semua resume yang 'id_pelamar'-nya cocok, urutkan dari yang terbaru.
         $resumes = Resume::where('id_pelamar', $pelamar->id_pelamar)

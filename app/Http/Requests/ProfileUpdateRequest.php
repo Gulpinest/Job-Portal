@@ -15,7 +15,7 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -26,5 +26,17 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
         ];
+
+        // Add company fields if user is company
+        if ($this->user()->isCompany()) {
+            $rules = array_merge($rules, [
+                'nama_perusahaan' => ['required', 'string', 'max:255'],
+                'no_telp_perusahaan' => ['nullable', 'string', 'max:20'],
+                'alamat_perusahaan' => ['nullable', 'string', 'max:500'],
+                'desc_company' => ['nullable', 'string', 'max:2000'],
+            ]);
+        }
+
+        return $rules;
     }
 }

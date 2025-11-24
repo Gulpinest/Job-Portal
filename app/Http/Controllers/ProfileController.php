@@ -16,8 +16,16 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $company = null;
+        
+        if ($user->isCompany()) {
+            $company = $user->company;
+        }
+        
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'company' => $company,
         ]);
     }
 
@@ -26,13 +34,34 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        
+        // Separate company fields from user fields
+        $companyFields = [];
+        if ($request->user()->isCompany()) {
+            $companyFields = [
+                'nama_perusahaan' => $validated['nama_perusahaan'] ?? null,
+                'no_telp_perusahaan' => $validated['no_telp_perusahaan'] ?? null,
+                'alamat_perusahaan' => $validated['alamat_perusahaan'] ?? null,
+                'desc_company' => $validated['desc_company'] ?? null,
+            ];
+            
+            // Remove company fields from user fill
+            unset($validated['nama_perusahaan'], $validated['no_telp_perusahaan'], $validated['alamat_perusahaan'], $validated['desc_company']);
+        }
+        
+        $request->user()->fill($validated);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
         $request->user()->save();
+        
+        // Update company information if user is company
+        if ($request->user()->isCompany() && !empty($companyFields)) {
+            $request->user()->company->update($companyFields);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

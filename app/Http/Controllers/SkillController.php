@@ -15,7 +15,7 @@ class SkillController extends Controller
     public function index()
     {
         $pelamar = Pelamar::where('id_user', Auth::id())->first();
-        $skills = $pelamar ? $pelamar->skills()->latest('pelamar_skill.created_at')->paginate(12) : collect();
+        $skills = $pelamar ? $pelamar->skills()->select('skills.*')->orderByDesc('pelamar_skill.created_at')->paginate(12) : collect();
 
         return view('skills.index', compact('skills'));
     }
@@ -31,7 +31,7 @@ class SkillController extends Controller
         $allSkills = Skill::orderBy('nama_skill')->get();
 
         // Get skills already added by this pelamar
-        $selectedSkillIds = $pelamar ? $pelamar->skills()->pluck('id_skill')->toArray() : [];
+        $selectedSkillIds = $pelamar ? $pelamar->skills()->select('skills.id_skill')->pluck('skills.id_skill')->toArray() : [];
 
         return view('skills.create', compact('allSkills', 'selectedSkillIds'));
     }

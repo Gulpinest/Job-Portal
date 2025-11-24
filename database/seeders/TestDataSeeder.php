@@ -21,6 +21,17 @@ class TestDataSeeder extends Seeder
         $pelamarRole = Roles::firstOrCreate(['name' => 'Pelamar'], ['name' => 'Pelamar', 'display_name' => 'Job Seeker']);
         $companyRole = Roles::firstOrCreate(['name' => 'Company'], ['name' => 'Company', 'display_name' => 'Company']);
 
+        // 0.1. Create test admin user
+        User::firstOrCreate(
+            ['email' => 'admin@test.com'],
+            [
+                'name' => 'Admin Test',
+                'email' => 'admin@test.com',
+                'password' => Hash::make('password'),
+                'role_id' => $adminRole->id,
+            ]
+        );
+
         // 0.5. Create test pelamar user
         User::firstOrCreate(
             ['email' => 'pelamar@test.com'],

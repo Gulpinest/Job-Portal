@@ -59,7 +59,7 @@ class User extends Authenticatable
         return $this->hasOne(Company::class, 'id_user');
     }
 
-    public function role(string $role){
+    public function role(){
         return $this->belongsTo(Roles::class);
     }
 

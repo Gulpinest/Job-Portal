@@ -5,6 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\InterviewScheduleController;
+use App\Http\Controllers\AdminSkillController;
+use App\Http\Controllers\AdminCompanyController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\PelamarLowonganController;
@@ -32,6 +35,15 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/logs', [AdminController::class, 'logs'])->name('admin.logs');
     Route::get('/admin/logs/{log}', [AdminController::class, 'logDetail'])->name('admin.logs.detail');
     Route::post('/admin/logs/clear', [AdminController::class, 'clearLogs'])->name('admin.logs.clear');
+
+    // Admin skill management
+    Route::resource('admin/skills', AdminSkillController::class)->names('admin.skills');
+
+    // Admin company verification
+    Route::get('/admin/companies', [AdminCompanyController::class, 'index'])->name('admin.companies.index');
+    Route::get('/admin/companies/{company}', [AdminCompanyController::class, 'show'])->name('admin.companies.show');
+    Route::post('/admin/companies/{company}/verify', [AdminCompanyController::class, 'verify'])->name('admin.companies.verify');
+    Route::post('/admin/companies/{company}/reject', [AdminCompanyController::class, 'reject'])->name('admin.companies.reject');
 });
 
 // Route yang hanya bisa diakses oleh company

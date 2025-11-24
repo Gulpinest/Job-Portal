@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pelamar extends Model
 {
@@ -28,9 +29,21 @@ class Pelamar extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function skills(): HasMany
+    /**
+     * Relationship: Pelamar has many Skills (many-to-many through pelamar_skill)
+     */
+    public function skills(): BelongsToMany
     {
-        return $this->hasMany(Skill::class, 'id_pelamar');
+        return $this->belongsToMany(
+            Skill::class,
+            'pelamar_skill',
+            'id_pelamar',
+            'id_skill',
+            'id_pelamar',
+            'id_skill'
+        )
+        ->withPivot('level', 'years_experience')
+        ->withTimestamps();
     }
 
     public function resumes(): HasMany

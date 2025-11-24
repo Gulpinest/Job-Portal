@@ -9,88 +9,126 @@ use Illuminate\Support\Facades\Auth;
 
 class SkillController extends Controller
 {
+    /**
+     * Display all skills selected by logged-in pelamar
+     */
     public function index()
     {
         $pelamar = Pelamar::where('id_user', Auth::id())->first();
-        $skills = $pelamar ? $pelamar->skills : collect();
+        $skills = $pelamar ? $pelamar->skills()->latest('pelamar_skill.created_at')->paginate(12) : collect();
 
         return view('skills.index', compact('skills'));
     }
 
+    /**
+     * Show form to add existing skills to pelamar profile
+     */
     public function create()
     {
-        return view('skills.create');
+        $pelamar = Pelamar::where('id_user', Auth::id())->first();
+
+        // Get all master skills
+        $allSkills = Skill::orderBy('nama_skill')->get();
+
+        // Get skills already added by this pelamar
+        $selectedSkillIds = $pelamar ? $pelamar->skills()->pluck('id_skill')->toArray() : [];
+
+        return view('skills.create', compact('allSkills', 'selectedSkillIds'));
     }
 
-    
+    /**
+     * Store selected skills to pelamar profile
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'nama_skill' => 'required|string|max:100',
-            'level' => 'required|in:Beginner,Intermediate,Advanced,Expert',
-            'years_experience' => 'nullable|integer|min:0|max:70',
+            'skills' => 'required|array|min:1',
+            'skills.*.id_skill' => 'required|exists:skills,id_skill',
+            'skills.*.level' => 'required|in:Beginner,Intermediate,Advanced,Expert',
+            'skills.*.years_experience' => 'nullable|integer|min:0|max:70',
         ]);
 
-        $pelamar = Pelamar::where('id_user', Auth::id())->first();
+        $pelamar = Pelamar::where('id_user', Auth::id())->firstOrFail();
 
-        if (!$pelamar) {
-            return redirect()->back()->with('error', 'Data pelamar tidak ditemukan.');
+        // Process each selected skill
+        foreach ($request->skills as $skillData) {
+            $skillId = $skillData['id_skill'];
+            $level = $skillData['level'];
+            $years = $skillData['years_experience'] ?? 0;
+
+            // Use sync to avoid duplicates, or updateOrCreate
+            $pelamar->skills()->syncWithoutDetaching([
+                $skillId => [
+                    'level' => $level,
+                    'years_experience' => $years,
+                ]
+            ]);
         }
 
-        Skill::create([
-            'id_pelamar' => $pelamar->id_pelamar,
-            'nama_skill' => $request->nama_skill,
-            'level' => $request->level,
-            'years_experience' => $request->years_experience ?? 0,
-        ]);
-
-        return redirect()->route('skills.index')->with('success', 'Skill berhasil ditambahkan.');
+        return redirect()->route('skills.index')
+                        ->with('success', 'Skill berhasil ditambahkan ke profil Anda!');
     }
 
+    /**
+     * Show form to edit skill level and experience
+     */
     public function edit(Skill $skill)
     {
         $pelamar = Pelamar::where('id_user', Auth::id())->first();
 
-        if ($skill->id_pelamar !== $pelamar->id_pelamar) {
-            abort(403, 'Akses ditolak.');
+        // Check if pelamar has this skill
+        if (!$pelamar || !$pelamar->skills()->where('id_skill', $skill->id_skill)->exists()) {
+            abort(403, 'Skill ini tidak ada di profil Anda.');
         }
 
-        return view('skills.edit', compact('skill'));
+        $pelamarSkill = $pelamar->skills()->find($skill->id_skill);
+
+        return view('skills.edit', compact('skill', 'pelamarSkill'));
     }
 
+    /**
+     * Update skill level and experience for pelamar
+     */
     public function update(Request $request, Skill $skill)
     {
         $request->validate([
-            'nama_skill' => 'required|string|max:100',
             'level' => 'required|in:Beginner,Intermediate,Advanced,Expert',
             'years_experience' => 'nullable|integer|min:0|max:70',
         ]);
 
-        $pelamar = Pelamar::where('id_user', Auth::id())->first();
+        $pelamar = Pelamar::where('id_user', Auth::id())->firstOrFail();
 
-        if ($skill->id_pelamar !== $pelamar->id_pelamar) {
-            abort(403, 'Akses ditolak.');
+        // Check if pelamar has this skill
+        if (!$pelamar->skills()->where('id_skill', $skill->id_skill)->exists()) {
+            abort(403, 'Skill ini tidak ada di profil Anda.');
         }
 
-        $skill->update([
-            'nama_skill' => $request->nama_skill,
+        // Update the pivot table
+        $pelamar->skills()->updateExistingPivot($skill->id_skill, [
             'level' => $request->level,
             'years_experience' => $request->years_experience ?? 0,
         ]);
 
-        return redirect()->route('skills.index')->with('success', 'Skill berhasil diperbarui.');
+        return redirect()->route('skills.index')
+                        ->with('success', 'Skill berhasil diperbarui!');
     }
 
+    /**
+     * Remove a skill from pelamar profile
+     */
     public function destroy(Skill $skill)
     {
-        $pelamar = Pelamar::where('id_user', Auth::id())->first();
+        $pelamar = Pelamar::where('id_user', Auth::id())->firstOrFail();
 
-        if ($skill->id_pelamar !== $pelamar->id_pelamar) {
-            abort(403, 'Akses ditolak.');
+        // Check if pelamar has this skill
+        if (!$pelamar->skills()->where('id_skill', $skill->id_skill)->exists()) {
+            abort(403, 'Skill ini tidak ada di profil Anda.');
         }
 
-        $skill->delete();
+        // Detach the skill
+        $pelamar->skills()->detach($skill->id_skill);
 
-        return redirect()->route('skills.index')->with('success', 'Skill berhasil dihapus.');
+        return redirect()->route('skills.index')
+                        ->with('success', 'Skill berhasil dihapus dari profil Anda!');
     }
 }

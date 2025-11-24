@@ -24,6 +24,14 @@ class LowonganController extends Controller
      */
     public function create()
     {
+        $company = Auth::user()->company;
+
+        // Check if company is verified
+        if (!$company->is_verified) {
+            return redirect()->route('lowongans.index')
+                            ->with('error', 'Akun perusahaan Anda belum diverifikasi oleh administrator. Silahkan tunggu persetujuan admin.');
+        }
+
         $allSkills = Skill::all(); // semua skill master
         $selectedSkills = [];      // belum ada yang dipilih
 
@@ -35,6 +43,14 @@ class LowonganController extends Controller
      */
     public function store(Request $request)
     {
+        $company = Auth::user()->company;
+
+        // Check if company is verified
+        if (!$company->is_verified) {
+            return redirect()->back()
+                            ->with('error', 'Akun perusahaan Anda belum diverifikasi. Tidak bisa membuat lowongan.');
+        }
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',

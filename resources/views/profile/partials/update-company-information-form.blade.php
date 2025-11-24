@@ -16,15 +16,15 @@
         {{-- Company Name --}}
         <div>
             <x-input-label for="nama_perusahaan" :value="__('Nama Perusahaan')" />
-            <x-text-input 
-                id="nama_perusahaan" 
-                name="nama_perusahaan" 
-                type="text" 
-                class="mt-1 block w-full" 
-                :value="old('nama_perusahaan', $company->nama_perusahaan)" 
-                required 
-                autofocus 
-                autocomplete="organization" 
+            <x-text-input
+                id="nama_perusahaan"
+                name="nama_perusahaan"
+                type="text"
+                class="mt-1 block w-full"
+                :value="old('nama_perusahaan', $company->nama_perusahaan)"
+                required
+                autofocus
+                autocomplete="organization"
             />
             <x-input-error class="mt-2" :messages="$errors->get('nama_perusahaan')" />
         </div>
@@ -32,13 +32,13 @@
         {{-- Company Phone --}}
         <div>
             <x-input-label for="no_telp_perusahaan" :value="__('Nomor Telepon')" />
-            <x-text-input 
-                id="no_telp_perusahaan" 
-                name="no_telp_perusahaan" 
-                type="tel" 
-                class="mt-1 block w-full" 
-                :value="old('no_telp_perusahaan', $company->no_telp_perusahaan)" 
-                placeholder="Contoh: +62-812-3456-7890" 
+            <x-text-input
+                id="no_telp_perusahaan"
+                name="no_telp_perusahaan"
+                type="tel"
+                class="mt-1 block w-full"
+                :value="old('no_telp_perusahaan', $company->no_telp_perusahaan)"
+                placeholder="Contoh: +62-812-3456-7890"
             />
             <x-input-error class="mt-2" :messages="$errors->get('no_telp_perusahaan')" />
         </div>
@@ -46,9 +46,9 @@
         {{-- Company Address --}}
         <div>
             <x-input-label for="alamat_perusahaan" :value="__('Alamat Perusahaan')" />
-            <textarea 
-                id="alamat_perusahaan" 
-                name="alamat_perusahaan" 
+            <textarea
+                id="alamat_perusahaan"
+                name="alamat_perusahaan"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 rows="4"
                 placeholder="Masukkan alamat lengkap perusahaan..."
@@ -59,9 +59,9 @@
         {{-- Company Description --}}
         <div>
             <x-input-label for="desc_company" :value="__('Deskripsi Perusahaan')" />
-            <textarea 
-                id="desc_company" 
-                name="desc_company" 
+            <textarea
+                id="desc_company"
+                name="desc_company"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 rows="5"
                 placeholder="Ceritakan tentang perusahaan Anda, visi, misi, dan budaya kerja..."

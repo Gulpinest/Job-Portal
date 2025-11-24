@@ -46,7 +46,7 @@
                                 <div class="p-4 border-2 border-gray-200 rounded-xl transition">
                                     <div class="flex items-start">
                                         <div class="flex items-center h-6 mt-1">
-                                            <input type="checkbox" 
+                                            <input type="checkbox"
                                                    id="skill_{{ $skill->id_skill }}"
                                                    name="skills[{{ $skill->id_skill }}][id_skill]"
                                                    value="{{ $skill->id_skill }}"

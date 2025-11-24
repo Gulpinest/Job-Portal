@@ -17,7 +17,7 @@ class ResumeController extends Controller
         // Mendapatkan data pelamar yang terautentikasi.
         // Asumsi: Setiap User memiliki satu relasi 'pelamar' dan objek 'pelamar' memiliki 'id_pelamar'.
         $pelamar = Auth::user()->pelamar;
-        
+
         if (!$pelamar) {
             abort(403, 'Anda tidak memiliki profil pelamar');
         }
@@ -104,7 +104,7 @@ class ResumeController extends Controller
             'ringkasan_singkat' => 'nullable|string|max:300',
             'file_resume' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
-        
+
         $dataToUpdate = $validatedData;
         unset($dataToUpdate['file_resume']); // Hapus dari array update jika tidak ada file baru
 
@@ -144,6 +144,6 @@ class ResumeController extends Controller
         return redirect()->route('resumes.index')
                          ->with('success', 'Resume berhasil dihapus!');
     }
-    
+
     // (Metode show dihilangkan karena jarang digunakan untuk list file)
 }

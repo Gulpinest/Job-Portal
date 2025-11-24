@@ -16,59 +16,33 @@
                     </x-nav-link>
 
                     @if(auth()->user()->isPelamar())
-                        {{-- Link Resume --}}
+                        {{-- Links for Pelamar (Job Seeker) --}}
                         <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
                             {{ __('Resume') }}
                         </x-nav-link>
                         <x-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
                             {{ __('Skill Saya') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.*')">
+                        <x-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.pelamar_index')">
                             {{ __('Lowongan') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.*')">
+                        <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')">
                             {{ __('Lamaran Saya') }}
                         </x-nav-link>
                     @elseif (auth()->user()->isCompany())
-                        {{-- Link Lowongan --}}
-                        <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
+                        {{-- Links for Company --}}
+                        <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')">
                             {{ __('Lowongan') }}
                         </x-nav-link>
-
-                        @elseif(auth()->user()->isPelamar())
-                            {{-- Link Resume (Pelamar) --}}
-                            <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
-                                {{ __('Resume') }}
-                            </x-nav-link>
-                            {{-- Link Lowongan (Pelamar) --}}
-                            <x-nav-link :href="route('lowongans.pelamar_index')"
-                                :active="request()->routeIs('lowongans.pelamar_index')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
-                                {{ __('Lowongan') }}
-                            </x-nav-link>
-                            {{-- Link Lamaran Saya (Pelamar) --}}
-                            <x-nav-link :href="route('lowongans.lamaran_saya')"
-                                :active="request()->routeIs('lowongans.lamaran_saya')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150 {{ request()->routeIs('lowongans.lamaran_saya') ? 'text-indigo-600 font-bold' : '' }}">
-                                {{ __('Lamaran Saya') }}
-                            </x-nav-link>
-
-                        @elseif (auth()->user()->isCompany())
-                            {{-- Link Lowongan (Perusahaan) --}}
-                            <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
-                                {{ __('Lowongan') }}
-                            </x-nav-link>
-
-                            {{-- Link Jadwal Interview (Perusahaan) --}}
-                            <x-nav-link :href="route('interview-schedules.index')"
-                                :active="request()->routeIs('interview-schedules.*')"
-                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
-                                {{ __('Jadwal Interview') }}
-                            </x-nav-link>
-                        @endif
-                    @endauth
+                        <x-nav-link :href="route('interview-schedules.index')" :active="request()->routeIs('interview-schedules.*')">
+                            {{ __('Jadwal Interview') }}
+                        </x-nav-link>
+                    @elseif (auth()->user()->isAdmin())
+                        {{-- Links for Admin --}}
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                            {{ __('Admin Panel') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -91,7 +65,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        {{-- Link Profil (Dropdown Item) --}}
+                        {{-- Profile Link --}}
                         @if(auth()->user()->isPelamar() && isset(auth()->user()->pelamar))
                             <x-dropdown-link :href="route('pelamar.profil')" class="text-gray-900 hover:bg-gray-100">
                                 {{ __('Profile Pelamar') }}
@@ -133,6 +107,7 @@
         </div>
     </div>
 
+    {{-- Mobile Menu --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
@@ -141,25 +116,45 @@
             </x-responsive-nav-link>
 
             @auth
-                @if(auth()->user()->isAdmin())
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('admin.*') ? 'text-indigo-600 font-bold' : '' }}">
-                        {{ __('Admin Panel') }}
+                @if(auth()->user()->isPelamar())
+                    {{-- Mobile Links for Pelamar --}}
+                    <x-responsive-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Resume') }}
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Skill Saya') }}
                     </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
-                {{ __('Skill Saya') }}
-            </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.pelamar_index')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Lowongan') }}
+                    </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.*')">
-                {{ __('Lowongan') }}
-            </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Lamaran Saya') }}
+                    </x-responsive-nav-link>
 
-                    {{-- Link Jadwal Interview (Mobile) --}}
-                    <x-responsive-nav-link :href="route('interview-schedules.index')"
-                        :active="request()->routeIs('interview-schedules.*')"
-                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('interview-schedules.*') ? 'text-indigo-600 font-bold' : '' }}">
+                @elseif(auth()->user()->isCompany())
+                    {{-- Mobile Links for Company --}}
+                    <x-responsive-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Lowongan') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('interview-schedules.index')" :active="request()->routeIs('interview-schedules.*')"
+                        class="text-gray-900 hover:bg-gray-100">
                         {{ __('Jadwal Interview') }}
+                    </x-responsive-nav-link>
+
+                @elseif(auth()->user()->isAdmin())
+                    {{-- Mobile Links for Admin --}}
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Admin Panel') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth
@@ -172,7 +167,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                {{-- Link Profil Mobile --}}
+                {{-- Profile Link Mobile --}}
                 @if(auth()->user()->isPelamar() && isset(auth()->user()->pelamar))
                     <x-responsive-nav-link :href="route('pelamar.profil')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Profile Pelamar') }}

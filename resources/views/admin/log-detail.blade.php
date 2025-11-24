@@ -9,8 +9,8 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-6">
-                <a 
-                    href="{{ route('admin.logs') }}" 
+                <a
+                    href="{{ route('admin.logs') }}"
                     class="text-blue-600 hover:text-blue-800 font-medium"
                 >
                     ← Kembali ke Log

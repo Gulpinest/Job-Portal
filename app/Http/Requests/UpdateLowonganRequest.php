@@ -12,8 +12,8 @@ class UpdateLowonganRequest extends FormRequest
     public function authorize(): bool
     {
         // User harus authenticated, memiliki role company, dan pemilik lowongan tersebut
-        return auth()->check() && 
-               auth()->user()->isCompany() && 
+        return auth()->check() &&
+               auth()->user()->isCompany() &&
                $this->route('lowongan')->id_company === auth()->user()->company->id_company;
     }
 

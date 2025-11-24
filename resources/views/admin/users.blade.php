@@ -12,16 +12,16 @@
                 <div class="px-6 py-4">
                     <form method="GET" action="{{ route('admin.users') }}" class="flex gap-4">
                         <div class="flex-1">
-                            <input 
-                                type="text" 
-                                name="search" 
-                                placeholder="Cari nama atau email..." 
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Cari nama atau email..."
                                 value="{{ request('search') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                         </div>
-                        <select 
-                            name="role_id" 
+                        <select
+                            name="role_id"
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">Semua Role</option>
@@ -29,14 +29,14 @@
                             <option value="2" {{ request('role_id') == '2' ? 'selected' : '' }}>Pelamar</option>
                             <option value="3" {{ request('role_id') == '3' ? 'selected' : '' }}>Perusahaan</option>
                         </select>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                         >
                             Cari
                         </button>
-                        <a 
-                            href="{{ route('admin.users') }}" 
+                        <a
+                            href="{{ route('admin.users') }}"
                             class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
                         >
                             Reset
@@ -77,16 +77,16 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm">
                                         @if(!$user->isAdmin() && auth()->id() !== $user->id)
-                                            <form 
-                                                method="POST" 
+                                            <form
+                                                method="POST"
                                                 action="{{ route('admin.users.delete', $user) }}"
                                                 onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?');"
                                                 class="inline"
                                             >
                                                 @csrf
                                                 @method('DELETE')
-                                                <button 
-                                                    type="submit" 
+                                                <button
+                                                    type="submit"
                                                     class="text-red-600 hover:text-red-800 font-medium"
                                                 >
                                                     Hapus

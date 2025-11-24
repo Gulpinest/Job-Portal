@@ -12,16 +12,16 @@
                 <div class="px-6 py-4">
                     <form method="GET" action="{{ route('admin.logs') }}" class="flex gap-4">
                         <div class="flex-1">
-                            <input 
-                                type="text" 
-                                name="search" 
-                                placeholder="Cari aktivitas..." 
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Cari aktivitas..."
                                 value="{{ request('search') }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                         </div>
-                        <select 
-                            name="user_id" 
+                        <select
+                            name="user_id"
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">Semua Pengguna</option>
@@ -31,14 +31,14 @@
                                 </option>
                             @endforeach
                         </select>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                         >
                             Cari
                         </button>
-                        <a 
-                            href="{{ route('admin.logs') }}" 
+                        <a
+                            href="{{ route('admin.logs') }}"
                             class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
                         >
                             Reset
@@ -46,15 +46,15 @@
                     </form>
 
                     <div class="mt-4">
-                        <form 
-                            method="POST" 
+                        <form
+                            method="POST"
                             action="{{ route('admin.logs.clear') }}"
                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus semua log?');"
                             class="inline"
                         >
                             @csrf
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
                             >
                                 Hapus Semua Log
@@ -91,7 +91,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-sm">
-                                        <a 
+                                        <a
                                             href="{{ route('admin.logs.detail', $log) }}"
                                             class="text-blue-600 hover:text-blue-800 font-medium"
                                         >

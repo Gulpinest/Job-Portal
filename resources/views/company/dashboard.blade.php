@@ -12,7 +12,7 @@
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
                 <h3 class="text-3xl font-extrabold text-gray-900 mb-1">Halo, {{ $company->nama_perusahaan }}!</h3>
                 <p class="text-md text-gray-500">Dashboard manajemen lowongan dan pelamar Anda.</p>
-                
+
                 {{-- Verification Status --}}
                 <div class="mt-4 p-3 rounded-xl flex justify-between items-center {{ $company->is_verified ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200' }}">
                     <div>
@@ -31,7 +31,7 @@
 
             <!-- 2. STATISTICS SUMMARY CARDS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
+
                 {{-- Card 1: Total Lowongans --}}
                 <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
                     <p class="text-sm font-medium text-gray-500">Total Lowongan</p>
@@ -41,14 +41,14 @@
                         <span class="text-red-600 font-semibold">{{ $closedLowongans }}</span> ditutup
                     </p>
                 </div>
-                
+
                 {{-- Card 2: Active Lowongans --}}
                 <div class="bg-green-50 rounded-2xl p-6 shadow-md border border-green-200">
                     <p class="text-sm font-medium text-green-700">Lowongan Aktif</p>
                     <p class="text-3xl font-extrabold text-green-800 mt-1">{{ $activeLowongans }}</p>
                     <a href="{{ route('lowongans.index') }}" class="text-xs text-green-600 hover:text-green-800 font-semibold mt-2 inline-block">Lihat semua →</a>
                 </div>
-                
+
                 {{-- Card 3: Total Pelamar --}}
                 <div class="bg-purple-50 rounded-2xl p-6 shadow-md border border-purple-200">
                     <p class="text-sm font-medium text-purple-700">Total Pelamar</p>
@@ -57,7 +57,7 @@
                         <span class="font-semibold">{{ $pendingPelamar }}</span> menunggu review
                     </p>
                 </div>
-                
+
                 {{-- Card 4: Pending Review --}}
                 <div class="bg-amber-50 rounded-2xl p-6 shadow-md border border-amber-200">
                     <p class="text-sm font-medium text-amber-700">Perlu Ditinjau</p>
@@ -68,10 +68,10 @@
 
             <!-- 3. MAIN CONTENT: Quick Actions & Recent Activities -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
+
                 {{-- Left Column: Quick Actions --}}
                 <div class="lg:col-span-1 space-y-6">
-                    
+
                     <!-- Quick Action Buttons -->
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 space-y-3">
                         <h4 class="text-lg font-bold text-gray-900 border-b pb-3">Aksi Cepat</h4>
@@ -95,7 +95,7 @@
                     <!-- Company Info Card -->
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 space-y-4">
                         <h4 class="text-lg font-bold text-gray-900 border-b pb-3">Informasi Perusahaan</h4>
-                        
+
                         <div class="space-y-3 text-sm">
                             <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                                 <p class="text-xs text-gray-600 font-semibold">NAMA PERUSAHAAN</p>
@@ -115,11 +115,11 @@
 
                 {{-- Right Column: Recent Activities --}}
                 <div class="lg:col-span-2 space-y-6">
-                    
+
                     <!-- Recent Lowongans -->
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                         <h4 class="text-lg font-bold text-gray-900 mb-4 border-b pb-3">Lowongan Terbaru</h4>
-                        
+
                         <div class="space-y-3">
                             @forelse($recentLowongans as $lowongan)
                                 <div class="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition duration-150">
@@ -143,7 +143,7 @@
                                 <p class="text-center text-gray-500 py-4">Belum ada lowongan</p>
                             @endforelse
                         </div>
-                        
+
                         <a href="{{ route('lowongans.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 mt-5 block text-center">
                             Lihat Semua Lowongan
                         </a>
@@ -152,7 +152,7 @@
                     <!-- Recent Lamarans -->
                     <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                         <h4 class="text-lg font-bold text-gray-900 mb-4 border-b pb-3">Pelamar Terbaru</h4>
-                        
+
                         <div class="space-y-3">
                             @forelse($recentLamarans as $lamaran)
                                 <div class="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition duration-150">
@@ -173,7 +173,7 @@
                                 <p class="text-center text-gray-500 py-4">Belum ada pelamar</p>
                             @endforelse
                         </div>
-                        
+
                         <a href="{{ route('lowongans.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 mt-5 block text-center">
                             Lihat Semua Pelamar
                         </a>

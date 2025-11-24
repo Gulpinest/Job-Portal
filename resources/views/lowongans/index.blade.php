@@ -193,11 +193,11 @@
                     <div class="mt-8">
                         <div class="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-gray-200 shadow-sm">
                             <div class="text-sm text-gray-600">
-                                Menampilkan <span class="font-semibold">{{ $lowongans->firstItem() }}</span> 
-                                hingga 
-                                <span class="font-semibold">{{ $lowongans->lastItem() }}</span> 
-                                dari 
-                                <span class="font-semibold">{{ $lowongans->total() }}</span> 
+                                Menampilkan <span class="font-semibold">{{ $lowongans->firstItem() }}</span>
+                                hingga
+                                <span class="font-semibold">{{ $lowongans->lastItem() }}</span>
+                                dari
+                                <span class="font-semibold">{{ $lowongans->total() }}</span>
                                 lowongan
                             </div>
                             <div>

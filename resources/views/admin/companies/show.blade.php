@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ $company->nama_perusahaan }}
+    </h2>
+@endsection
+
 @section('content')
-<div class="min-h-screen bg-gray-50 py-12 px-4">
-    <div class="max-w-4xl mx-auto">
+<div class="bg-white rounded-lg shadow">
+    <div class="p-6">
         <!-- Back Button -->
         <div class="mb-6">
             <a href="{{ route('admin.companies.index') }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
@@ -158,4 +164,6 @@
         document.getElementById('rejectModal').classList.add('hidden');
     }
 </script>
+    </div>
+</div>
 @endsection

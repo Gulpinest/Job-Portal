@@ -1,11 +1,17 @@
 @extends('layouts.app')
 
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('Verifikasi Perusahaan') }}
+    </h2>
+@endsection
+
 @section('content')
-<div class="min-h-screen bg-gray-50 py-12 px-4">
-    <div class="max-w-6xl mx-auto">
+<div class="bg-white rounded-lg shadow">
+    <div class="p-6">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-900">Verifikasi Perusahaan</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Verifikasi Perusahaan</h1>
             <p class="text-gray-600 mt-2">Kelola persetujuan registrasi perusahaan baru</p>
         </div>
 

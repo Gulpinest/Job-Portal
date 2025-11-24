@@ -53,7 +53,11 @@
         <!-- Page Content -->
         <main class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                {{ $slot }}
+                @hasSection('content')
+                    @yield('content')
+                @else
+                    {{ $slot ?? '' }}
+                @endif
             </div>
         </main>
 

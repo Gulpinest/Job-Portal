@@ -39,8 +39,20 @@
                         </x-nav-link>
                     @elseif (auth()->user()->isAdmin())
                         {{-- Links for Admin --}}
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                            {{ __('Admin Panel') }}
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.skills.index')" :active="request()->routeIs('admin.skills.*')">
+                            {{ __('Manajemen Skill') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')">
+                            {{ __('Verifikasi Company') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.logs')" :active="request()->routeIs('admin.logs*')">
+                            {{ __('Logs') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -152,9 +164,29 @@
 
                 @elseif(auth()->user()->isAdmin())
                     {{-- Mobile Links for Admin --}}
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
                         class="text-gray-900 hover:bg-gray-100">
-                        {{ __('Admin Panel') }}
+                        {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link :href="route('admin.skills.index')" :active="request()->routeIs('admin.skills.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Manajemen Skill') }}
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Verifikasi Company') }}
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Users') }}
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link :href="route('admin.logs')" :active="request()->routeIs('admin.logs*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Logs') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth

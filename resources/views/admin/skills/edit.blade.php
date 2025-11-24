@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('Edit Skill') }}
+    </h2>
+@endsection
+
 @section('content')
-<div class="min-h-screen bg-gray-50 py-12 px-4">
-    <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-lg shadow-lg p-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Skill Master</h1>
+<div class="bg-white rounded-lg shadow">
+    <div class="p-6 max-w-2xl">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Skill</h1>
 
             <form method="POST" action="{{ route('admin.skills.update', $skill) }}">
                 @csrf

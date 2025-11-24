@@ -158,9 +158,9 @@
                             Company Information
                         </h3>
 
-                        {{-- Deskripsi Singkat Perusahaan --}}
+                        {{-- Deskripsi Perusahaan --}}
                         <p class="text-sm text-gray-600 mb-4">
-                            {{ $lowongan->company->deskripsi_singkat ?? 'Perusahaan ini bergerak di bidang Creative Agency.' }}
+                            {{ $lowongan->company->desc_company ?? 'Deskripsi perusahaan tidak tersedia.' }}
                         </p>
 
                         <dl class="space-y-2 text-sm text-gray-700">
@@ -169,17 +169,12 @@
                                 <dd>{{ $lowongan->company->nama_perusahaan ?? '-' }}</dd>
                             </div>
                             <div class="flex justify-between items-center">
-                                <dt class="font-medium">Web:</dt>
-                                <dd>
-                                    <a href="{{ $lowongan->company->website ?? '#' }}" target="_blank"
-                                        class="text-indigo-600 hover:underline">
-                                        {{ $lowongan->company->website ?? 'website-perusahaan.com' }}
-                                    </a>
-                                </dd>
+                                <dt class="font-medium">Alamat:</dt>
+                                <dd>{{ $lowongan->company->alamat_perusahaan ?? 'Tidak ditentukan' }}</dd>
                             </div>
                             <div class="flex justify-between items-center">
-                                <dt class="font-medium">Email:</dt>
-                                <dd>{{ $lowongan->company->email_kontak ?? 'contact@company.com' }}</dd>
+                                <dt class="font-medium">Telepon:</dt>
+                                <dd>{{ $lowongan->company->no_telp_perusahaan ?? 'Tidak ditentukan' }}</dd>
                             </div>
                         </dl>
                     </div>

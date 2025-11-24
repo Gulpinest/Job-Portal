@@ -109,18 +109,17 @@
                         </div>
                     </div>
 
-                    {{-- Persyaratan Tambahan (Simulasi/Placeholder) --}}
-                    <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-200">
-                        <h3 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-200 text-gray-900">
-                            Keterampilan, Pengetahuan & Pengalaman Tambahan
-                        </h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                            <li>Memiliki pengalaman minimal 3 tahun di bidang terkait.</li>
-                            <li>Kuasai bahasa pemrograman/tools yang relevan (misal: Python, Figma, dsb.).</li>
-                            <li>Keterampilan komunikasi dan pemecahan masalah yang kuat.</li>
-                            <li>Pendidikan S1/setara di bidang yang relevan.</li>
-                        </ul>
-                    </div>
+                    {{-- Persyaratan Tambahan --}}
+                    @if (!empty($lowongan->persyaratan_tambahan))
+                        <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-200">
+                            <h3 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-200 text-gray-900">
+                                Keterampilan, Pengetahuan & Pengalaman Tambahan
+                            </h3>
+                            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                                {!! nl2br(e($lowongan->persyaratan_tambahan)) !!}
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- RIGHT COLUMN: Sidebar (Overview, Form Lamaran, Company Info) --}}

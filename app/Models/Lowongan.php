@@ -20,8 +20,9 @@ class Lowongan extends Model
         'lokasi_kantor',
         'gaji',
         'keterampilan',
-        'tipe_kerja', // FIELD BARU DITAMBAHKAN
+        'tipe_kerja',
         'deskripsi',
+        'persyaratan_tambahan',
         'status',
     ];
 

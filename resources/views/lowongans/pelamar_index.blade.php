@@ -9,7 +9,7 @@
                         {{ __('Lowongan Pekerjaan Tersedia') }}
                     </h2>
                     <p class="text-sm text-gray-500 mt-1">
-                        {{ count($lowongans ?? []) }} Lowongan ditemukan.
+                        {{ $lowongans->total() ?? 0 }} Lowongan ditemukan.
                     </p>
                 </div>
 
@@ -215,6 +215,13 @@
                         </div>
                     @endforelse
                 </div>
+
+                {{-- PAGINATION LINKS --}}
+                @if ($lowongans->hasPages())
+                    <div class="mt-8 flex justify-center">
+                        {{ $lowongans->appends(request()->query())->links() }}
+                    </div>
+                @endif
             </div>
         </form> {{-- END FORM --}}
     </div>

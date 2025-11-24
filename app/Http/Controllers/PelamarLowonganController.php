@@ -62,8 +62,8 @@ class PelamarLowonganController extends Controller
             default => $query->latest(),
         };
 
-        // Get results
-        $lowongans = $query->get();
+        // Get results with pagination (10 items per page)
+        $lowongans = $query->paginate(10);
 
         return view('lowongans.pelamar_index', compact('lowongans'));
     }

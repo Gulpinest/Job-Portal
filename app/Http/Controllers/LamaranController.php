@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lamaran;
+use App\Models\Resume;
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,20 +18,33 @@ class LamaranController extends Controller
         ]);
 
         $user = Auth::user();
+        $pelamarId = $user->pelamar->id_pelamar;
 
+        // Verify resume belongs to logged-in pelamar
+        $resume = Resume::where('id_resume', $request->id_resume)
+                        ->where('id_pelamar', $pelamarId)
+                        ->firstOrFail();
+
+        // Check if already applied to this job
         $existingLamaran = Lamaran::where('id_lowongan', $request->id_lowongan)
-                                  ->where('id_pelamar', $user->pelamar->id_pelamar)
+                                  ->where('id_pelamar', $pelamarId)
                                   ->exists();
 
         if ($existingLamaran) {
             return redirect()->back()->with('error', 'Anda sudah melamar lowongan ini.');
         }
 
+        // Check if job listing is still open
+        $lowongan = Lowongan::findOrFail($request->id_lowongan);
+        if ($lowongan->status !== 'Open') {
+            return redirect()->back()->with('error', 'Lowongan ini sudah ditutup.');
+        }
+
         Lamaran::create([
             'id_lowongan' => $request->id_lowongan,
             'id_resume' => $request->id_resume,
-            'id_pelamar' => $user->pelamar->id_pelamar,
-            'cv'=> $request->id_resume,
+            'id_pelamar' => $pelamarId,
+            'cv' => $request->id_resume,
             'status' => 'Diajukan',
         ]);
 

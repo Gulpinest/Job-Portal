@@ -16,7 +16,14 @@
                     </x-nav-link>
 
                     @auth
-                        @if(auth()->user()->isPelamar())
+                        @if(auth()->user()->isAdmin())
+                            {{-- Link Admin Dashboard --}}
+                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                                class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
+                                {{ __('Admin Panel') }}
+                            </x-nav-link>
+
+                        @elseif(auth()->user()->isPelamar())
                             {{-- Link Resume (Pelamar) --}}
                             <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')"
                                 class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
@@ -122,7 +129,13 @@
             </x-responsive-nav-link>
 
             @auth
-                @if(auth()->user()->isPelamar())
+                @if(auth()->user()->isAdmin())
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                        class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('admin.*') ? 'text-indigo-600 font-bold' : '' }}">
+                        {{ __('Admin Panel') }}
+                    </x-responsive-nav-link>
+
+                @elseif(auth()->user()->isPelamar())
                     <x-responsive-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')"
                         class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('resumes.*') ? 'text-indigo-600 font-bold' : '' }}">
                         {{ __('Resume') }}

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
-use App\Models\LowonganSkill; 
+use App\Models\LowonganSkill;
 use App\Models\Skill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +61,7 @@ class LowonganController extends Controller
             'persyaratan_tambahan' => 'nullable|string',
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
-            'skills' => 'array', 
+            'skills' => 'array',
             'skills.*' => 'string|max:255',
         ]);
 
@@ -125,7 +125,7 @@ class LowonganController extends Controller
             'persyaratan_tambahan' => 'nullable|string',
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
-            'skills' => 'array',  
+            'skills' => 'array',
             'skills.*' => 'string|max:255',
         ]);
 

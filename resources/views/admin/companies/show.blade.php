@@ -85,7 +85,7 @@
                     <form action="{{ route('admin.companies.verify', $company) }}" method="POST" class="flex-1">
                         @csrf
                         @method('POST')
-                        <button type="submit" onclick="return confirm('Apakah Anda yakin ingin memverifikasi perusahaan ini?')" 
+                        <button type="submit" onclick="return confirm('Apakah Anda yakin ingin memverifikasi perusahaan ini?')"
                                 class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition">
                             ✓ Verifikasi Perusahaan
                         </button>
@@ -133,7 +133,7 @@
         <p class="text-gray-600 mb-6">
             Akun perusahaan dan pengguna terkait akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.
         </p>
-        
+
         <div class="flex gap-4">
             <button onclick="hideRejectModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-2 px-4 rounded">
                 Batal
@@ -153,7 +153,7 @@
     function showRejectModal() {
         document.getElementById('rejectModal').classList.remove('hidden');
     }
-    
+
     function hideRejectModal() {
         document.getElementById('rejectModal').classList.add('hidden');
     }

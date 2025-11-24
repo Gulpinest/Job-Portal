@@ -31,7 +31,7 @@
 
         <!-- Search -->
         <form method="GET" action="{{ route('admin.companies.index') }}" class="mb-6 flex gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama perusahaan atau email..." 
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama perusahaan atau email..."
                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg">Cari</button>
         </form>

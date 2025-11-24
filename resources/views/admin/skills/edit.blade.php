@@ -13,7 +13,7 @@
                 <!-- Nama Skill -->
                 <div class="mb-6">
                     <label for="nama_skill" class="block text-sm font-medium text-gray-900 mb-2">Nama Skill <span class="text-red-500">*</span></label>
-                    <input type="text" id="nama_skill" name="nama_skill" value="{{ old('nama_skill', $skill->nama_skill) }}" 
+                    <input type="text" id="nama_skill" name="nama_skill" value="{{ old('nama_skill', $skill->nama_skill) }}"
                            class="w-full px-4 py-3 border @error('nama_skill') border-red-500 @else border-gray-300 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     @error('nama_skill')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                
+
                 {{-- Pesan Error --}}
                 @if ($errors->any())
                     <div class="mb-4 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
@@ -36,12 +36,12 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                             Pilih Skill Anda <span class="text-red-600">*</span>
                         </label>
-                        
+
                         <div class="space-y-3">
                             @forelse($allSkills as $skill)
                                 <div class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                                     <div class="flex items-center h-5">
-                                        <input type="checkbox" id="skill_{{ $skill->id_skill }}" 
+                                        <input type="checkbox" id="skill_{{ $skill->id_skill }}"
                                                name="skills[{{ $skill->id_skill }}][id_skill]"
                                                value="{{ $skill->id_skill }}"
                                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -70,7 +70,7 @@
                                             <label for="level_{{ $skill->id_skill }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Level Keahlian
                                             </label>
-                                            <select id="level_{{ $skill->id_skill }}" 
+                                            <select id="level_{{ $skill->id_skill }}"
                                                     name="skills[{{ $skill->id_skill }}][level]"
                                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                                                 <option value="Beginner">Pemula (Beginner)</option>
@@ -85,7 +85,7 @@
                                             <label for="experience_{{ $skill->id_skill }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Tahun Pengalaman
                                             </label>
-                                            <input type="number" 
+                                            <input type="number"
                                                    id="experience_{{ $skill->id_skill }}"
                                                    name="skills[{{ $skill->id_skill }}][years_experience]"
                                                    min="0" max="70"
@@ -124,7 +124,7 @@
         function toggleSkillDetails(skillId) {
             const checkbox = document.getElementById('skill_' + skillId);
             const details = document.getElementById('details_' + skillId);
-            
+
             if (checkbox.checked) {
                 details.classList.remove('hidden');
             } else {

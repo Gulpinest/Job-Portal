@@ -19,7 +19,7 @@
             {{-- Bagian Pemberitahuan Sukses/Gagal Lamaran --}}
             @if (session('success') || session('error'))
                 <div class="mb-6 p-4 text-sm {{ session('success') ? 'text-green-800 rounded-xl bg-green-100 border border-green-400' : 'text-red-800 rounded-xl bg-red-100 border border-red-400' }} shadow-md flex items-center gap-2">
-                    <i class="fas {{ session('success') ? 'fa-check-circle' : 'fa-times-circle' }} text-lg"></i> 
+                    <i class="fas {{ session('success') ? 'fa-check-circle' : 'fa-times-circle' }} text-lg"></i>
                     {{ session('success') ?? session('error') }}
                 </div>
             @endif
@@ -98,7 +98,7 @@
                             @endphp
 
                             @forelse (array_filter($keterampilan) as $skill)
-                                <span class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full 
+                                <span class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full
                                     bg-indigo-100 text-indigo-800 shadow-sm">
                                     <i class="fas fa-code mr-2 text-indigo-500"></i>
                                     {{ trim($skill) }}
@@ -108,7 +108,7 @@
                             @endforelse
                         </div>
                     </div>
-                    
+
                     {{-- Persyaratan Tambahan (Simulasi/Placeholder) --}}
                     <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-200">
                         <h3 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-200 text-gray-900">

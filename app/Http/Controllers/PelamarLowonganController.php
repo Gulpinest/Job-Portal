@@ -42,7 +42,7 @@ class PelamarLowonganController extends Controller
         // Filter by posted within date range
         if ($request->filled('posted_within') && $request->posted_within !== 'Any') {
             $postedWithin = $request->posted_within;
-            
+
             $daysAgo = match($postedWithin) {
                 'Today' => 1,
                 'Last 2 days' => 2,
@@ -64,7 +64,7 @@ class PelamarLowonganController extends Controller
 
         // Get results
         $lowongans = $query->get();
-        
+
         return view('lowongans.pelamar_index', compact('lowongans'));
     }
 
@@ -85,12 +85,12 @@ class PelamarLowonganController extends Controller
     public function lamaran_saya()
     {
         $user = Auth::user();
-        
+
         $lamarans = Lamaran::where('id_pelamar', $user->pelamar->id_pelamar)
-                           ->with(['lowongan.company', 'resume']) 
+                           ->with(['lowongan.company', 'resume'])
                            ->latest()
                            ->get();
-        
+
         return view('lowongans.lamaran_saya', compact('lamarans'));
     }
 }

@@ -122,7 +122,7 @@
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Resume') }}
                     </x-responsive-nav-link>
-                    
+
                     <x-responsive-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Skill Saya') }}

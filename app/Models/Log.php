@@ -11,14 +11,24 @@ class Log extends Model
     use HasFactory;
 
     protected $primaryKey = 'id_log';
+    public $timestamps = true;
 
     protected $fillable = [
         'id_user',
-        'action',
+        'aksi',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Get the user that performed this action
+     */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }
+

@@ -5,10 +5,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\InterviewScheduleController;
+use App\Http\Controllers\PelamarInterviewController;
 use App\Http\Controllers\AdminSkillController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompanyDashboardController;
+use App\Http\Controllers\CompanyLamaranController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\PelamarLowonganController;
@@ -50,8 +52,21 @@ Route::middleware('admin')->group(function () {
 // Route yang hanya bisa diakses oleh company
 Route::middleware('company')->group(function () {
     Route::get('/company/dashboard', [CompanyDashboardController::class, 'dashboard'])->name('company.dashboard');
+    Route::get('/company/lamarans', [CompanyLamaranController::class, 'index'])->name('company.lamarans.index');
+    Route::get('/company/lamarans/{lamaran}', [CompanyLamaranController::class, 'show'])->name('company.lamarans.show');
+    Route::post('/company/lamarans/{lamaran}/accept', [CompanyLamaranController::class, 'accept'])->name('company.lamarans.accept');
+    Route::post('/company/lamarans/{lamaran}/reject', [CompanyLamaranController::class, 'reject'])->name('company.lamarans.reject');
     Route::resource('lowongans', LowonganController::class);
-    Route::resource('interview-schedules', InterviewScheduleController::class);
+
+    // Interview schedules routes (simplified - per lowongan)
+    Route::get('/interview-schedules', [InterviewScheduleController::class, 'index'])->name('interview-schedules.index');
+    Route::get('/lowongans/{lowongan}/interview/create', [InterviewScheduleController::class, 'create'])->name('interview-schedules.create');
+    Route::post('/lowongans/{lowongan}/interview', [InterviewScheduleController::class, 'store'])->name('interview-schedules.store');
+    Route::get('/interview-schedules/{interviewSchedule}/show', [InterviewScheduleController::class, 'show'])->name('interview-schedules.show');
+    Route::get('/interview-schedules/{interviewSchedule}/edit', [InterviewScheduleController::class, 'edit'])->name('interview-schedules.edit');
+    Route::put('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'update'])->name('interview-schedules.update');
+    Route::delete('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'destroy'])->name('interview-schedules.destroy');
+    Route::post('/interview-schedules/{interviewSchedule}/completed', [InterviewScheduleController::class, 'markCompleted'])->name('interview-schedules.mark-completed');
 });
 
 // Route yang hanya bisa diakses oleh pelamar
@@ -67,7 +82,14 @@ Route::middleware('pelamar')->group(function () {
     Route::get('/lowongan-kerja/{lowongan}', [PelamarLowonganController::class, 'show'])->name('lowongans.detail');
 
     Route::post('/lamar', [LamaranController::class, 'store'])->name('lamaran.store');
+    Route::delete('/lamar/{lamaran}/withdraw', [LamaranController::class, 'withdraw'])->name('lamaran.withdraw');
     Route::get('/lamaran-saya', [PelamarLowonganController::class, 'lamaran_saya'])->name('lowongans.lamaran_saya');
+
+    // Pelamar interview schedules
+    Route::get('/jadwal-wawancara', [PelamarInterviewController::class, 'index'])->name('pelamar.interviews.index');
+    Route::get('/jadwal-wawancara/{interviewSchedule}', [PelamarInterviewController::class, 'show'])->name('pelamar.interviews.show');
+    Route::post('/jadwal-wawancara/{interviewSchedule}/hadir', [PelamarInterviewController::class, 'markAttended'])->name('pelamar.interviews.mark-attended');
+    Route::post('/jadwal-wawancara/{interviewSchedule}/batalkan', [PelamarInterviewController::class, 'decline'])->name('pelamar.interviews.decline');
 
     Route::resource('skills', SkillController::class);
 

@@ -98,6 +98,32 @@ class LowonganController extends Controller
         return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }
 
+    public function show(Lowongan $lowongan)
+    {
+        if ($lowongan->id_company !== Auth::user()->company->id_company) {
+            abort(403, 'Akses Ditolak.');
+        }
+
+        // Load relationships
+        $lowongan->load('skills', 'lamarans.pelamar', 'interviewSchedule');
+
+        // Get lamaran stats
+        $lamarans = $lowongan->lamarans()->with('pelamar')->get();
+        $pendingCount = $lamarans->where('status_ajuan', 'Pending')->count();
+        $acceptedCount = $lamarans->where('status_ajuan', 'Accepted')->count();
+        $rejectedCount = $lamarans->where('status_ajuan', 'Rejected')->count();
+        $interviewScheduled = $lowongan->interviewSchedule !== null;
+
+        return view('lowongans.show', compact(
+            'lowongan',
+            'lamarans',
+            'pendingCount',
+            'acceptedCount',
+            'rejectedCount',
+            'interviewScheduled'
+        ));
+    }
+
     public function edit(Lowongan $lowongan)
     {
         if ($lowongan->id_company !== Auth::user()->company->id_company) {

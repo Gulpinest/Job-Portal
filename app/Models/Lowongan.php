@@ -42,6 +42,11 @@ class Lowongan extends Model
         return $this->hasMany(InterviewSchedule::class, 'id_lowongan');
     }
 
+    public function interviewSchedule()
+    {
+        return $this->hasOne(InterviewSchedule::class, 'id_lowongan');
+    }
+
     public function skills()
     {
         return $this->hasMany(LowonganSkill::class, 'id_lowongan', 'id_lowongan');

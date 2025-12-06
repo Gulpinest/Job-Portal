@@ -136,11 +136,11 @@
                             <div
                                 class="flex flex-col space-y-2 md:w-48 border-t md:border-t-0 pt-4 md:pt-0 md:pl-6 border-gray-100 md:border-l">
 
-                                {{-- Tombol Lihat Pelamar
-                                <a href="{{ route('lamaran.show_lowongan', $lowongan->id_lowongan) }}"
+                                {{-- Tombol Lihat Detail --}}
+                                <a href="{{ route('lowongans.show', $lowongan->id_lowongan) }}"
                                     class="inline-flex justify-center items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-xl font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-md">
-                                    <i class="fas fa-users mr-2"></i> Lihat Pelamar ({{ $totalPelamar }})
-                                </a> --}}
+                                    <i class="fas fa-eye mr-2"></i> Lihat Detail
+                                </a>
 
                                 {{-- Tombol Edit --}}
                                 <a href="{{ route('lowongans.edit', $lowongan->id_lowongan) }}"

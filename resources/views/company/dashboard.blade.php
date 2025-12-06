@@ -174,7 +174,7 @@
                             @endforelse
                         </div>
 
-                        <a href="{{ route('lowongans.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 mt-5 block text-center">
+                        <a href="{{ route('company.lamarans.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 mt-5 block text-center">
                             Lihat Semua Pelamar
                         </a>
                     </div>

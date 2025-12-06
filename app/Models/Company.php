@@ -21,6 +21,7 @@ class Company extends Model
         'desc_company',
         'is_verified',
         'verified_at',
+        'rejection_reason',
     ];
 
     protected $casts = [

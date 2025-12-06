@@ -68,8 +68,8 @@ class AdminCompanyController extends Controller
             'alasan_penolakan' => 'nullable|string|max:500',
         ]);
 
-        // Optional: You can store rejection reason if you add a column
-        // $company->update(['rejection_reason' => $request->alasan_penolakan]);
+        // Store rejection reason
+        $company->update(['rejection_reason' => $request->alasan_penolakan]);
 
         // Delete the company and associated user
         $user = $company->user;

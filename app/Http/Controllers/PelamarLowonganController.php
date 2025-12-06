@@ -36,21 +36,53 @@ class PelamarLowonganController extends Controller
         $lowongan->load('company', 'skills');
         $resumes = Auth::user()->pelamar->resumes;
 
-        return view('lowongans.detail', compact('lowongan', 'resumes'));
+        // Check if pelamar already applied to this job
+        $isAlreadyApplied = Lamaran::where('id_pelamar', Auth::user()->pelamar->id_pelamar)
+                                    ->where('id_lowongan', $lowongan->id_lowongan)
+                                    ->exists();
+
+        return view('lowongans.detail', compact('lowongan', 'resumes', 'isAlreadyApplied'));
     }
 
     /**
      * Show list of applications submitted by pelamar
      */
-    public function lamaran_saya()
+    public function lamaran_saya(Request $request)
     {
         $user = Auth::user();
+        $pelamarId = $user->pelamar->id_pelamar;
 
-        $lamarans = Lamaran::where('id_pelamar', $user->pelamar->id_pelamar)
-                           ->with(['lowongan.company', 'resume'])
-                           ->latest()
-                           ->get();
+        // Query lamarans dengan eager loading
+        $lamaransQuery = Lamaran::where('id_pelamar', $pelamarId)
+                                 ->with(['lowongan.company', 'resume'])
+                                 ->latest();
 
-        return view('lowongans.lamaran_saya', compact('lamarans'));
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $lamaransQuery->where('status_ajuan', $request->status);
+        }
+
+        // Search berdasarkan nama perusahaan atau posisi
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $lamaransQuery->whereHas('lowongan', function ($query) use ($searchTerm) {
+                $query->where('judul', 'like', "%{$searchTerm}%")
+                      ->orWhere('posisi', 'like', "%{$searchTerm}%");
+            })
+            ->orWhereHas('lowongan.company', function ($query) use ($searchTerm) {
+                $query->where('nama_perusahaan', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Hitung statistik
+        $totalLamarans = Lamaran::where('id_pelamar', $pelamarId)->count();
+        $diterimaaCount = Lamaran::where('id_pelamar', $pelamarId)->where('status_ajuan', 'Accepted')->count();
+        $ditolakCount = Lamaran::where('id_pelamar', $pelamarId)->where('status_ajuan', 'Rejected')->count();
+        $diproseswCount = Lamaran::where('id_pelamar', $pelamarId)->where('status_ajuan', 'Pending')->count();
+
+        // Pagination
+        $lamarans = $lamaransQuery->paginate(8);
+
+        return view('lowongans.lamaran_saya', compact('lamarans', 'totalLamarans', 'diterimaaCount', 'ditolakCount', 'diproseswCount'));
     }
 }

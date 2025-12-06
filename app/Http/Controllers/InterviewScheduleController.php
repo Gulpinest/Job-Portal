@@ -3,144 +3,236 @@
 namespace App\Http\Controllers;
 
 use App\Models\InterviewSchedule;
-use App\Models\Lowongan; // Import model Lowongan
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class InterviewScheduleController extends Controller
 {
     /**
-     * Menampilkan semua jadwal interview untuk company yang login.
+     * Display list of interview schedules for company
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil data company dari user yang sedang login.
         $company = Auth::user()->company;
 
-        // Mengambil semua jadwal interview milik company tersebut,
-        // beserta data relasi 'lowongan'. Relasi ke 'lamaran' tidak ada di migrasi,
-        // jadi kita hapus eager loading-nya.
-        $schedules = InterviewSchedule::whereHas('lowongan', function($query) use ($company) {
-                                            $query->where('id_company', $company->id_company);
-                                        })->with('lowongan') // Eager Loading
-                                        ->latest()
-                                        ->get();
+        $schedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
+            $query->where('id_company', $company->id_company);
+        })
+        ->with(['lowongan'])
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $searchTerm = $request->search;
+            $query->whereHas('lowongan', function ($q) use ($searchTerm) {
+                $q->where('judul', 'like', "%{$searchTerm}%");
+            });
+        })
+        ->when($request->filled('status'), function ($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->latest('tanggal_interview')
+        ->paginate(10);
 
-        return view('interview-schedules.index', compact('schedules'));
+        // Statistics
+        $totalSchedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
+            $query->where('id_company', $company->id_company);
+        })->count();
+
+        $upcomingSchedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
+            $query->where('id_company', $company->id_company);
+        })
+        ->where('tanggal_interview', '>=', now())
+        ->where('status', 'Scheduled')
+        ->count();
+
+        $completedSchedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
+            $query->where('id_company', $company->id_company);
+        })
+        ->where('status', 'Completed')
+        ->count();
+
+        $cancelledSchedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
+            $query->where('id_company', $company->id_company);
+        })
+        ->where('status', 'Cancelled')
+        ->count();
+
+        return view('company.interviews.index', compact(
+            'schedules',
+            'totalSchedules',
+            'upcomingSchedules',
+            'completedSchedules',
+            'cancelledSchedules'
+        ));
     }
 
     /**
-     * Menampilkan form untuk membuat jadwal interview.
+     * Show create interview form for specific lowongan
      */
-    public function create()
+    public function create(Request $request, Lowongan $lowongan)
     {
         $company = Auth::user()->company;
 
-        // Mengambil daftar lowongan milik company ini untuk ditampilkan di form.
-        $lowongans = Lowongan::where('id_company', $company->id_company)->get();
-
-        return view('interview-schedules.create', compact('lowongans'));
-    }
-
-    /**
-     * Menyimpan jadwal interview baru ke database.
-     */
-    public function store(Request $request)
-    {
-        // return dd($request->all());
-
-        $request->validate([
-            'id_lowongan' => 'required|exists:lowongans,id_lowongan',
-            'type' => 'required|string|max:255',
-            'tempat' => 'nullable|string|max:255',
-            'waktu_jadwal' => 'required|date_format:Y-m-d\TH:i',
-            'catatan' => 'nullable|string',
-        ]);
-
-        $company = Auth::user()->company;
-        $lowongan = Lowongan::find($request->id_lowongan);
-
-        // Keamanan: Memastikan lowongan yang dipilih adalah milik company yang login.
+        // Verify ownership
         if ($lowongan->id_company !== $company->id_company) {
-            abort(403, 'Akses Ditolak');
+            abort(403);
         }
 
-        InterviewSchedule::create([
-            'id_lowongan' => $request->id_lowongan,
-            // 'id_company' => $company->id_company, // Asumsi ada relasi ke company
-            'type' => $request->type,
-            'tempat' => $request->tempat,
-            'waktu_jadwal' => $request->waktu_jadwal,
-            'catatan' => $request->catatan,
-        ]);
+        // Check if interview already scheduled for this lowongan
+        if ($lowongan->interviewSchedule) {
+            return redirect()->route('lowongans.show', $lowongan)
+                            ->with('info', 'Wawancara sudah dijadwalkan untuk lowongan ini.');
+        }
 
-        return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil dibuat.');
+        // Get accepted applicants for this lowongan
+        $acceptedApplicants = $lowongan->lamarans()
+            ->where('status_ajuan', 'Accepted')
+            ->with(['pelamar.user'])
+            ->get();
+
+        return view('company.interviews.create', compact('lowongan', 'acceptedApplicants'));
     }
 
     /**
-     * Menampilkan form untuk mengedit jadwal interview.
+     * Store interview schedule for lowongan
+     */
+    public function store(Request $request, Lowongan $lowongan)
+    {
+        $company = Auth::user()->company;
+
+        // Verify ownership
+        if ($lowongan->id_company !== $company->id_company) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'tanggal_interview' => 'required|date|after:now',
+            'jam_interview' => 'required|date_format:H:i',
+            'lokasi' => 'required|string|max:500',
+            'tipe' => 'required|in:Online,Offline',
+            'catatan' => 'nullable|string|max:1000',
+        ]);
+
+        // Check if interview already exists
+        if ($lowongan->interviewSchedule) {
+            return redirect()->back()->with('error', 'Wawancara sudah dijadwalkan untuk lowongan ini.');
+        }
+
+        // Combine date and time
+        $dateTime = $validated['tanggal_interview'] . ' ' . $validated['jam_interview'];
+
+        InterviewSchedule::create([
+            'id_lowongan' => $lowongan->id_lowongan,
+            'waktu_jadwal' => $dateTime,
+            'lokasi' => $validated['lokasi'],
+            'type' => $validated['tipe'],
+            'catatan' => $validated['catatan'],
+            'status' => 'Scheduled',
+        ]);
+
+        return redirect()->route('lowongans.show', $lowongan)
+                        ->with('success', 'Wawancara berhasil dijadwalkan untuk semua pelamar yang diterima!');
+    }
+
+    /**
+     * Show interview detail
+     */
+    public function show(InterviewSchedule $interviewSchedule)
+    {
+        $company = Auth::user()->company;
+
+        // Verify ownership
+        if ($interviewSchedule->lowongan->id_company !== $company->id_company) {
+            abort(403);
+        }
+
+        $interviewSchedule->load(['lowongan']);
+
+        return view('company.interviews.show', compact('interviewSchedule'));
+    }
+
+    /**
+     * Show edit interview form
      */
     public function edit(InterviewSchedule $interviewSchedule)
     {
         $company = Auth::user()->company;
 
-        // Keamanan: Pastikan company yang login adalah pemilik jadwal ini.
-        if ($interviewSchedule->id_company !== $company->id_company) {
-            abort(403, 'Akses Ditolak');
+        // Verify ownership
+        if ($interviewSchedule->lowongan->id_company !== $company->id_company) {
+            abort(403);
         }
 
-        // Ambil daftar lowongan untuk dropdown, sama seperti di method create().
-        $lowongans = Lowongan::where('id_company', $company->id_company)->get();
+        $interviewSchedule->load('lowongan');
 
-        return view('interview-schedules.edit', compact('interviewSchedule', 'lowongans'));
+        return view('company.interviews.edit', compact('interviewSchedule'));
     }
 
     /**
-     * Mengupdate data jadwal interview di database.
+     * Update interview schedule
      */
     public function update(Request $request, InterviewSchedule $interviewSchedule)
     {
-        $request->validate([
-            'id_lowongan' => 'required|exists:lowongans,id_lowongan',
-            'type' => 'required|string|max:255',
-            'tempat' => 'nullable|string|max:255',
-            'waktu_jadwal' => 'required|date_format:Y-m-d\TH:i',
-            'catatan' => 'nullable|string',
-        ]);
-
         $company = Auth::user()->company;
-        $lowongan = Lowongan::find($request->id_lowongan);
 
-        // Keamanan ganda:
-        // 1. Cek kepemilikan jadwal yang akan di-update.
-        // 2. Cek kepemilikan lowongan baru yang dipilih.
-        if ($interviewSchedule->id_company !== $company->id_company || $lowongan->id_company !== $company->id_company) {
-            abort(403, 'Akses Ditolak');
+        // Verify ownership
+        if ($interviewSchedule->lowongan->id_company !== $company->id_company) {
+            abort(403);
         }
 
-        $interviewSchedule->update([
-            'id_lowongan' => $request->id_lowongan,
-            'type' => $request->type,
-            'tempat' => $request->tempat,
-            'waktu_jadwal' => $request->waktu_jadwal,
-            'catatan' => $request->catatan,
+        $validated = $request->validate([
+            'tanggal_interview' => 'required|date|after:now',
+            'jam_interview' => 'required|date_format:H:i',
+            'lokasi' => 'required|string|max:500',
+            'tipe' => 'required|in:Online,Offline',
+            'catatan' => 'nullable|string|max:1000',
         ]);
 
-        return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil diperbarui.');
+        // Combine date and time
+        $dateTime = $validated['tanggal_interview'] . ' ' . $validated['jam_interview'];
+
+        $interviewSchedule->update([
+            'tanggal_interview' => $dateTime,
+            'lokasi' => $validated['lokasi'],
+            'tipe' => $validated['tipe'],
+            'catatan' => $validated['catatan'],
+        ]);
+
+        return redirect()->route('interview-schedules.show', $interviewSchedule)
+                        ->with('success', 'Wawancara berhasil diperbarui!');
     }
 
     /**
-     * Menghapus jadwal interview dari database.
+     * Cancel/Delete interview
      */
     public function destroy(InterviewSchedule $interviewSchedule)
     {
-        // Keamanan: Pastikan company yang login adalah pemilik jadwal ini.
-        if ($interviewSchedule->id_company !== Auth::user()->company->id_company) {
-            abort(403, 'Akses Ditolak');
+        $company = Auth::user()->company;
+
+        // Verify ownership
+        if ($interviewSchedule->lowongan->id_company !== $company->id_company) {
+            abort(403);
         }
 
         $interviewSchedule->delete();
 
-        return redirect()->route('interview-schedules.index')->with('success', 'Jadwal interview berhasil dihapus.');
+        return redirect()->route('interview-schedules.index')
+                        ->with('success', 'Wawancara berhasil dibatalkan!');
+    }
+
+    /**
+     * Mark interview as completed
+     */
+    public function markCompleted(InterviewSchedule $interviewSchedule)
+    {
+        $company = Auth::user()->company;
+
+        // Verify ownership
+        if ($interviewSchedule->lowongan->id_company !== $company->id_company) {
+            abort(403);
+        }
+
+        $interviewSchedule->update(['status' => 'Completed']);
+
+        return redirect()->back()->with('success', 'Status wawancara diperbarui menjadi Selesai!');
     }
 }

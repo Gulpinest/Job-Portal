@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Company;
+use App\Models\Lamaran;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
+use App\Models\Resume;
 use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -45,7 +47,7 @@ class TestDataSeeder extends Seeder
         );
 
         // 0.6. Create pelamar profile if not exists
-        Pelamar::firstOrCreate(
+        $pelamar = Pelamar::firstOrCreate(
             ['id_user' => $pelamarUser->id],
             [
                 'id_user' => $pelamarUser->id,
@@ -201,6 +203,66 @@ class TestDataSeeder extends Seeder
                 ['judul' => $job['judul']],
                 array_merge($job, ['id_company' => $company->id_company])
             );
+        }
+
+        // Create resumes for pelamar
+        $resume1 = Resume::firstOrCreate(
+            ['id_pelamar' => $pelamar->id_pelamar, 'nama_resume' => 'Resume Standar'],
+            [
+                'id_pelamar' => $pelamar->id_pelamar,
+                'nama_resume' => 'Resume Standar',
+                'skill' => 'PHP, Laravel, JavaScript, React, SQL, MySQL',
+                'pendidikan_terakhir' => 'S1 Teknik Informatika',
+                'ringkasan_singkat' => 'Full Stack Developer dengan pengalaman 3 tahun',
+                'file_resume' => null,
+            ]
+        );
+
+        $resume2 = Resume::firstOrCreate(
+            ['id_pelamar' => $pelamar->id_pelamar, 'nama_resume' => 'Resume Backend'],
+            [
+                'id_pelamar' => $pelamar->id_pelamar,
+                'nama_resume' => 'Resume Backend',
+                'skill' => 'PHP, Laravel, Python, Docker, Kubernetes, AWS',
+                'pendidikan_terakhir' => 'S1 Teknik Informatika',
+                'ringkasan_singkat' => 'Backend Developer dengan fokus pada Laravel dan DevOps',
+                'file_resume' => null,
+            ]
+        );
+
+        // Create sample applications (lamarans)
+        $seniorLaravelJob = Lowongan::where('judul', 'Senior Laravel Developer')->first();
+        $frontendJob = Lowongan::where('judul', 'Frontend React Developer')->first();
+        $dataScientistJob = Lowongan::where('judul', 'Data Scientist')->first();
+
+        if ($seniorLaravelJob && !Lamaran::where('id_lowongan', $seniorLaravelJob->id_lowongan)->where('id_pelamar', $pelamar->id_pelamar)->exists()) {
+            Lamaran::create([
+                'id_pelamar' => $pelamar->id_pelamar,
+                'id_lowongan' => $seniorLaravelJob->id_lowongan,
+                'id_resume' => $resume1->id_resume,
+                'cv' => null,
+                'status_ajuan' => 'Pending',
+            ]);
+        }
+
+        if ($frontendJob && !Lamaran::where('id_lowongan', $frontendJob->id_lowongan)->where('id_pelamar', $pelamar->id_pelamar)->exists()) {
+            Lamaran::create([
+                'id_pelamar' => $pelamar->id_pelamar,
+                'id_lowongan' => $frontendJob->id_lowongan,
+                'id_resume' => $resume1->id_resume,
+                'cv' => null,
+                'status_ajuan' => 'Accepted',
+            ]);
+        }
+
+        if ($dataScientistJob && !Lamaran::where('id_lowongan', $dataScientistJob->id_lowongan)->where('id_pelamar', $pelamar->id_pelamar)->exists()) {
+            Lamaran::create([
+                'id_pelamar' => $pelamar->id_pelamar,
+                'id_lowongan' => $dataScientistJob->id_lowongan,
+                'id_resume' => $resume2->id_resume,
+                'cv' => null,
+                'status_ajuan' => 'Rejected',
+            ]);
         }
     }
 }

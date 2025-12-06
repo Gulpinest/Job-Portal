@@ -29,6 +29,9 @@
                         <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')">
                             {{ __('Lamaran Saya') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('pelamar.interviews.index')" :active="request()->routeIs('pelamar.interviews.*')">
+                            {{ __('Jadwal Wawancara') }}
+                        </x-nav-link>
                     @elseif (auth()->user()->isCompany())
                         {{-- Links for Company --}}
                         <x-nav-link :href="route('company.dashboard')" :active="request()->routeIs('company.dashboard')">
@@ -151,6 +154,11 @@
                     <x-responsive-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')"
                         class="text-gray-900 hover:bg-gray-100">
                         {{ __('Lamaran Saya') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('pelamar.interviews.index')" :active="request()->routeIs('pelamar.interviews.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Jadwal Wawancara') }}
                     </x-responsive-nav-link>
 
                 @elseif(auth()->user()->isCompany())

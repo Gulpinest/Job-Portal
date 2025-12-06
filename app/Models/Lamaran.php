@@ -16,8 +16,10 @@ class Lamaran extends Model
     protected $fillable = [
         'id_pelamar',
         'id_lowongan',
+        'id_resume',
         'cv',
         'status_ajuan',
+        'rejection_reason',
     ];
 
     public function pelamar(): BelongsTo
@@ -35,9 +37,9 @@ class Lamaran extends Model
         return $this->hasMany(StatusLamaran::class, 'id_lamaran');
     }
 
-    public function interviewSchedules(): HasMany
+    public function interviewSchedule()
     {
-        return $this->hasMany(InterviewSchedule::class, 'id_lamaran');
+        return $this->hasOne(InterviewSchedule::class, 'id_lamaran');
     }
 
     public function Resume()

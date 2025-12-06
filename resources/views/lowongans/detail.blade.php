@@ -181,9 +181,17 @@
                     {{-- Formulir Kirim Lamaran --}}
                     <div class="bg-white shadow-xl rounded-2xl p-6 border border-gray-200">
                         @if ($lowongan->status == 'Open')
-                            <h4 class="text-xl font-bold mb-4 text-gray-900">Kirim Lamaran Anda</h4>
-
-                            @if ($resumes->isEmpty())
+                            @if ($isAlreadyApplied)
+                                {{-- Already Applied --}}
+                                <div class="p-4 text-sm text-green-800 rounded-lg bg-green-100 border border-green-400 flex items-start gap-3">
+                                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    <div>
+                                        <p class="font-bold">✓ Anda Sudah Melamar</p>
+                                        <p class="text-xs text-green-700 mt-1">Lamaran Anda untuk posisi ini sudah kami terima. Silakan cek halaman <a href="{{ route('lowongans.lamaran_saya') }}" class="font-bold underline hover:text-green-900">Lamaran Saya</a> untuk melihat status lamaran Anda.</p>
+                                    </div>
+                                </div>
+                            @elseif ($resumes->isEmpty())
                                 <div class="p-4 text-sm text-yellow-800 rounded-lg bg-yellow-100 border border-yellow-400"
                                     role="alert">
                                     <i class="fas fa-exclamation-triangle mr-1"></i> Anda harus memiliki <a
@@ -192,6 +200,7 @@
                                         (CV)</a> sebelum bisa melamar.
                                 </div>
                             @else
+                                <h4 class="text-xl font-bold mb-4 text-gray-900">Kirim Lamaran Anda</h4>
                                 <form method="POST" action="{{ route('lamaran.store') }}">
                                     @csrf
 

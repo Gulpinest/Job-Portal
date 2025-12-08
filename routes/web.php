@@ -17,6 +17,8 @@ use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\LanggananController;
 use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SubscriptionController;
 // use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaymentController;
@@ -62,7 +64,6 @@ Route::middleware('company')->group(function () {
     Route::post('/company/lamarans/{lamaran}/accept', [CompanyLamaranController::class, 'accept'])->name('company.lamarans.accept');
     Route::post('/company/lamarans/{lamaran}/reject', [CompanyLamaranController::class, 'reject'])->name('company.lamarans.reject');
     Route::resource('lowongans', LowonganController::class);
-    Route::resource('langganan', LanggananController::class);
 
     Route::post('/payment/subscribe', [PaymentController::class, 'subscribe'])->name('payment.subscribe');
 
@@ -75,6 +76,8 @@ Route::middleware('company')->group(function () {
     Route::put('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'update'])->name('interview-schedules.update');
     Route::delete('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'destroy'])->name('interview-schedules.destroy');
     Route::post('/interview-schedules/{interviewSchedule}/completed', [InterviewScheduleController::class, 'markCompleted'])->name('interview-schedules.mark-completed');
+
+    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
 });
 
 // Route yang hanya bisa diakses oleh pelamar
@@ -103,5 +106,7 @@ Route::middleware('pelamar')->group(function () {
 
 });
     Route::post('/api/payment/webhook', [PaymentController::class, 'webhook']);
+
+Route::post('/api/payment/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
 
 require __DIR__.'/auth.php';

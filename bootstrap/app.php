@@ -17,13 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\admin::class,
             'company' => \App\Http\Middleware\company::class,
             'pelamar' => \App\Http\Middleware\pelamar::class,
+            'check.quota' => \App\Http\Middleware\CheckJobQuota::class,
             // Middleware bawaan Breeze biasanya sudah otomatis terdaftar,
             // namun jika perlu, alias lain bisa ditambahkan di sini.
             // 'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             // 'auth' => \App\Http\Middleware\Authenticate::class,
         ]);
+        
         $middleware->validateCsrfTokens(except: [
-            '/api/payment/webhook',
+        '/api/payment/webhook', // Izin khusus untuk jalur ini
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

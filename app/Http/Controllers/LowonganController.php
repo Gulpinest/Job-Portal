@@ -40,8 +40,8 @@ class LowonganController extends Controller
             }
         }
 
-        $allSkills = Skill::all(); // semua skill master
-        $selectedSkills = [];      // belum ada yang dipilih
+        $allSkills = Skill::all(); 
+        $selectedSkills = [];      
 
         return view('lowongans.create', compact('allSkills', 'selectedSkills'));
     }
@@ -64,10 +64,10 @@ class LowonganController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',
-            'lokasi_kantor' => 'required|string|max:255',
-            'gaji' => 'nullable|string|max:255',
-            'tipe_kerja' => 'required|string|max:50',
-            'persyaratan_tambahan' => 'nullable|string',
+            'lokasi_kantor' => 'required|string|max:255', // Tambahan
+            'gaji' => 'required|string|max:255',          // Tambahan
+            'keterampilan' => 'required|string',          // Tambahan
+            'tipe_kerja' => 'required|string',            // Tambahan
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
             'skills' => 'array',
@@ -79,7 +79,7 @@ class LowonganController extends Controller
 
         // 3. Simpan Data
         $lowongan = Lowongan::create([
-            'id_company' => $companyId,
+            'id_company' => $companyId, // Menggunakan variabel yang benar
             'judul' => $request->judul,
             'posisi' => $request->posisi,
             'lokasi_kantor' => $request->lokasi_kantor,
@@ -88,6 +88,7 @@ class LowonganController extends Controller
             'persyaratan_tambahan' => $request->persyaratan_tambahan,
             'deskripsi' => $request->deskripsi,
             'status' => $request->status,
+            'tipe_kerja' => $request->tipe_kerja,
         ]);
 
         // 4. Simpan Skills
@@ -157,18 +158,27 @@ class LowonganController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',
-            'lokasi_kantor' => 'required|string|max:255',
-            'gaji' => 'nullable|string|max:255',
-            'tipe_kerja' => 'required|string|max:50',
-            'persyaratan_tambahan' => 'nullable|string',
+            'lokasi_kantor' => 'required|string|max:255', // Tambahan
+            'gaji' => 'required|string|max:255',          // Tambahan
+            'keterampilan' => 'required|string',          // Tambahan
+            'tipe_kerja' => 'required|string',            // Tambahan
             'deskripsi' => 'required|string',
             'status' => 'required|in:Open,Closed',
             'skills' => 'array',
             'skills.*' => 'string|max:255',
         ]);
 
-        // Update data utama lowongan
-        $lowongan->update($request->only(['judul', 'posisi', 'lokasi_kantor', 'gaji', 'tipe_kerja', 'persyaratan_tambahan', 'deskripsi', 'status']));
+        // 7. PERBAIKAN UPDATE (Agar field baru ikut tersimpan saat diedit)
+        $lowongan->update([
+            'judul' => $request->judul,
+            'posisi' => $request->posisi,
+            'lokasi_kantor' => $request->lokasi_kantor,
+            'gaji' => $request->gaji,
+            'keterampilan' => $request->keterampilan,
+            'deskripsi' => $request->deskripsi,
+            'status' => $request->status,
+            'tipe_kerja' => $request->tipe_kerja,
+        ]);
 
         // Update skills: hapus lama, simpan ulang
         LowonganSkill::where('id_lowongan', $lowongan->id_lowongan)->delete();

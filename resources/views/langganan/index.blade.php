@@ -4,6 +4,28 @@
 <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
 <x-app-layout>
+    
+    {{-- TAMBAHKAN BLOK INI AGAR PESAN ERROR MUNCUL --}}
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Gagal!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <strong class="font-bold">Ada Kesalahan Input:</strong>
+                <ul class="mt-1 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
+    {{-- BATAS AKHIR TAMBAHAN --}}
 
     <style>
         .package-card {
@@ -130,10 +152,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href=""
-                            class="mt-8 w-full block text-center bg-amber-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-amber-600 hover:shadow-amber-500/30 transition duration-300 text-sm uppercase tracking-wide">
-                            Pilih Paket Standar
-                        </a>
+                        <form action="{{ route('payment.subscribe') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="package_id" value="2">
+                            <button type="submit" class="mt-8 w-full block text-center bg-amber-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-amber-600 hover:shadow-amber-500/30 transition duration-300 text-sm uppercase tracking-wide">
+                                Pilih Paket Standar
+                            </button>
+                        </form>
                     </div>
 
                     <!-- KARTU 3: PAKET PREMIUM (TAHUNAN) -->
@@ -177,10 +202,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href=""
-                            class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-indigo-700 hover:shadow-indigo-500/30 transition duration-300 text-sm uppercase tracking-wide">
-                            Pilih Paket Premium
-                        </a>
+                        <form action="{{ route('payment.subscribe') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="package_id" value="3">
+                            <button type="submit" class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-indigo-700 hover:shadow-indigo-500/30 transition duration-300 text-sm uppercase tracking-wide">
+                                Pilih Paket Premium
+                            </button>
+                        </form>
                     </div>
 
                 </div>

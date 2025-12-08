@@ -19,6 +19,7 @@ use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
 // use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,6 +64,8 @@ Route::middleware('company')->group(function () {
     Route::resource('lowongans', LowonganController::class);
     Route::resource('langganan', LanggananController::class);
 
+    Route::post('/payment/subscribe', [PaymentController::class, 'subscribe'])->name('payment.subscribe');
+
     // Interview schedules routes (simplified - per lowongan)
     Route::get('/interview-schedules', [InterviewScheduleController::class, 'index'])->name('interview-schedules.index');
     Route::get('/lowongans/{lowongan}/interview/create', [InterviewScheduleController::class, 'create'])->name('interview-schedules.create');
@@ -99,5 +102,6 @@ Route::middleware('pelamar')->group(function () {
     Route::resource('skills', SkillController::class);
 
 });
+    Route::post('/api/payment/webhook', [PaymentController::class, 'webhook']);
 
 require __DIR__.'/auth.php';

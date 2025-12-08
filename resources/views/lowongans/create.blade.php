@@ -86,7 +86,29 @@
                             </select>
                         </div>
 
-                        <!-- BARIS 4: STATUS (Status Open/Closed) -->
+                        <!-- BARIS 4: Deskripsi Lowongan (WYSIWYG) -->
+                        <div>
+                            <label for="editor-deskripsi" class="block font-medium text-sm text-gray-700 mb-2">Deskripsi Pekerjaan <span class="text-red-500">*</span></label>
+                            <div id="editor-deskripsi" class="bg-white border border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500" style="height: 300px;"></div>
+                            <textarea id="deskripsi" name="deskripsi" style="display: none;"></textarea>
+                            <div id="deskripsi-error" class="text-red-500 text-xs mt-2 hidden"></div>
+                            @error('deskripsi')
+                                <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                            @enderror
+                            <p class="text-xs text-gray-500 mt-2">Gunakan formatting untuk membuat deskripsi lebih menarik</p>
+                        </div>
+
+                        <!-- BARIS 5: Persyaratan Tambahan -->
+                        <div>
+                            <label for="persyaratan_tambahan" class="block font-medium text-sm text-gray-700 mb-2">Persyaratan Tambahan</label>
+                            <textarea id="persyaratan_tambahan" name="persyaratan_tambahan"
+                                class="block w-full border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                rows="4"
+                                placeholder="Contoh:&#10;• Pengalaman minimal 3 tahun&#10;• Sertifikasi PMP&#10;• English proficiency yang baik">{{ old('persyaratan_tambahan') }}</textarea>
+                            <p class="text-xs text-gray-500 mt-2">Gunakan bullet points untuk daftar persyaratan</p>
+                        </div>
+
+                        <!-- BARIS 6: STATUS (Status Open/Closed) -->
                         <div>
                             <label for="status" class="block font-medium text-sm text-gray-700">Status Lowongan</label>
                             <select name="status" id="status" required
@@ -160,7 +182,59 @@
 </x-app-layout>
 
 <script>
+let quillEditor = null;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Inisialisasi Quill Editor untuk field deskripsi
+    quillEditor = new Quill('#editor-deskripsi', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image'],
+                [{ 'align': [] }],
+            ]
+        },
+        placeholder: 'Jelaskan detail pekerjaan, tanggung jawab, dan deskripsi lengkap posisi ini...'
+    });
+
+    // Set initial value jika ada old value
+    @if(old('deskripsi'))
+        quillEditor.root.innerHTML = `{{ old('deskripsi') }}`;
+    @endif
+
+    // Sync Quill ke textarea saat ada perubahan
+    quillEditor.on('text-change', function() {
+        document.getElementById('deskripsi').value = quillEditor.root.innerHTML;
+    });
+
+    // Handle form submit
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Sync final content ke textarea
+            document.getElementById('deskripsi').value = quillEditor.root.innerHTML;
+
+            // Get text content untuk validasi
+            const deskripsiText = quillEditor.getText().trim();
+            const errorDiv = document.getElementById('deskripsi-error');
+
+            // Validasi bahwa deskripsi tidak kosong
+            if (!deskripsiText || deskripsiText.length === 0) {
+                e.preventDefault();
+                errorDiv.textContent = 'Deskripsi pekerjaan tidak boleh kosong!';
+                errorDiv.classList.remove('hidden');
+                return false;
+            }
+
+            // Clear error message jika valid
+            errorDiv.classList.add('hidden');
+        });
+    }
+
+    // Skill search functionality
     const searchInput = document.getElementById('skillSearch');
     const skillItems = document.querySelectorAll('.skill-item');
     const noResults = document.getElementById('noResults');

@@ -11,11 +11,15 @@ use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompanyDashboardController;
 use App\Http\Controllers\CompanyLamaranController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LamaranController;
+use App\Http\Controllers\LanggananController;
 use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SubscriptionController;
+// use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubscriptionController;
 
 Route::get('/', function () {
@@ -58,23 +62,7 @@ Route::middleware('company')->group(function () {
     Route::get('/company/lamarans/{lamaran}', [CompanyLamaranController::class, 'show'])->name('company.lamarans.show');
     Route::post('/company/lamarans/{lamaran}/accept', [CompanyLamaranController::class, 'accept'])->name('company.lamarans.accept');
     Route::post('/company/lamarans/{lamaran}/reject', [CompanyLamaranController::class, 'reject'])->name('company.lamarans.reject');
-    
-    // 2. ROUTE PEMBELIAN PAKET (Harus bisa diakses meski kuota habis)
-    Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
-    Route::post('/subscription/buy', [SubscriptionController::class, 'buy'])->name('subscription.buy');
-
-    // 3. ROUTE YANG DIJAGA "SATPAM" KUOTA (Hanya Create dan Store)
-    // Jika kuota 0, user dilarang masuk ke sini
-    Route::middleware('check.quota')->group(function () {
-        Route::get('/lowongans/create', [LowonganController::class, 'create'])->name('lowongans.create');
-        Route::post('/lowongans', [LowonganController::class, 'store'])->name('lowongans.store');
-    });
-
-    // 4. ROUTE LOWONGAN SISANYA (Index, Edit, Update, Destroy)
-    // Kita pakai 'except' karena create & store sudah kita definisikan khusus di atas.
-    // Tujuannya: Agar user tetap bisa mengedit/menghapus loker lama meski kuota mereka 0.
-    Route::resource('lowongans', LowonganController::class)->except(['create', 'store']);
-
+    Route::resource('lowongans', LowonganController::class);
 
     // Interview schedules routes (simplified - per lowongan)
     Route::get('/interview-schedules', [InterviewScheduleController::class, 'index'])->name('interview-schedules.index');

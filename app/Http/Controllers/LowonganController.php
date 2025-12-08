@@ -33,6 +33,13 @@ class LowonganController extends Controller
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi oleh administrator. Silahkan tunggu persetujuan admin.');
         }
 
+        if ($company->package) {
+            if ($company->job_quota <= 0) {
+                return redirect()->route('pricing')
+                    ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
+            }
+        }
+
         $allSkills = Skill::all(); 
         $selectedSkills = [];      
 
@@ -47,6 +54,11 @@ class LowonganController extends Controller
         if (!$company->is_verified) {
             return redirect()->back()
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi. Tidak bisa membuat lowongan.');
+        }
+
+        if ($company->package && $company->job_quota <= 0) {
+            return redirect()->back()
+                ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
         }
 
         $request->validate([

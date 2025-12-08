@@ -23,13 +23,16 @@
                         <x-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
                             {{ __('Skill Saya') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.pelamar_index')">
+                        <x-nav-link :href="route('lowongans.pelamar_index')"
+                            :active="request()->routeIs('lowongans.pelamar_index')">
                             {{ __('Lowongan') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')">
+                        <x-nav-link :href="route('lowongans.lamaran_saya')"
+                            :active="request()->routeIs('lowongans.lamaran_saya')">
                             {{ __('Lamaran Saya') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('pelamar.interviews.index')" :active="request()->routeIs('pelamar.interviews.*')">
+                        <x-nav-link :href="route('pelamar.interviews.index')"
+                            :active="request()->routeIs('pelamar.interviews.*')">
                             {{ __('Jadwal Wawancara') }}
                         </x-nav-link>
                     @elseif (auth()->user()->isCompany())
@@ -40,8 +43,12 @@
                         <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')">
                             {{ __('Lowongan') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('interview-schedules.index')" :active="request()->routeIs('interview-schedules.*')">
+                        <x-nav-link :href="route('interview-schedules.index')"
+                            :active="request()->routeIs('interview-schedules.*')">
                             {{ __('Jadwal Interview') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('langganan.index')" :active="request()->routeIs('langganan.*')">
+                            {{ __('Langganan') }}
                         </x-nav-link>
                     @elseif (auth()->user()->isAdmin())
                         {{-- Links for Admin --}}
@@ -51,7 +58,8 @@
                         <x-nav-link :href="route('admin.skills.index')" :active="request()->routeIs('admin.skills.*')">
                             {{ __('Manajemen Skill') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')">
+                        <x-nav-link :href="route('admin.companies.index')"
+                            :active="request()->routeIs('admin.companies.*')">
                             {{ __('Verifikasi Company') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
@@ -146,18 +154,18 @@
                         {{ __('Skill Saya') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('lowongans.pelamar_index')" :active="request()->routeIs('lowongans.pelamar_index')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('lowongans.pelamar_index')"
+                        :active="request()->routeIs('lowongans.pelamar_index')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Lowongan') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('lowongans.lamaran_saya')" :active="request()->routeIs('lowongans.lamaran_saya')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('lowongans.lamaran_saya')"
+                        :active="request()->routeIs('lowongans.lamaran_saya')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Lamaran Saya') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('pelamar.interviews.index')" :active="request()->routeIs('pelamar.interviews.*')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('pelamar.interviews.index')"
+                        :active="request()->routeIs('pelamar.interviews.*')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Jadwal Wawancara') }}
                     </x-responsive-nav-link>
 
@@ -173,8 +181,8 @@
                         {{ __('Lowongan') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('interview-schedules.index')" :active="request()->routeIs('interview-schedules.*')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('interview-schedules.index')"
+                        :active="request()->routeIs('interview-schedules.*')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Jadwal Interview') }}
                     </x-responsive-nav-link>
 
@@ -190,8 +198,8 @@
                         {{ __('Manajemen Skill') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('admin.companies.index')"
+                        :active="request()->routeIs('admin.companies.*')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Verifikasi Company') }}
                     </x-responsive-nav-link>
 

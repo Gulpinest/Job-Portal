@@ -23,9 +23,6 @@ class LowonganController extends Controller
         return view('lowongans.index', compact('lowongans'));
     }
 
-    /**
-     * Menampilkan form untuk membuat lowongan baru (lowongans.create).
-     */
     public function create()
     {
         $company = Auth::user()->company;
@@ -36,15 +33,19 @@ class LowonganController extends Controller
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi oleh administrator. Silahkan tunggu persetujuan admin.');
         }
 
+        if ($company->package) {
+            if ($company->job_quota <= 0) {
+                return redirect()->route('pricing')
+                    ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
+            }
+        }
+
         $allSkills = Skill::all(); // semua skill master
         $selectedSkills = [];      // belum ada yang dipilih
 
         return view('lowongans.create', compact('allSkills', 'selectedSkills'));
     }
 
-    /**
-     * Menyimpan data lowongan baru ke dalam database (lowongans.store).
-     */
     public function store(Request $request)
     {
         $company = Auth::user()->company;
@@ -53,6 +54,11 @@ class LowonganController extends Controller
         if (!$company->is_verified) {
             return redirect()->back()
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi. Tidak bisa membuat lowongan.');
+        }
+
+        if ($company->package && $company->job_quota <= 0) {
+            return redirect()->back()
+                ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
         }
 
         $request->validate([
@@ -68,9 +74,10 @@ class LowonganController extends Controller
             'skills.*' => 'string|max:255',
         ]);
 
+        // 2. Definisi Company ID (SUDAH BENAR)
         $companyId = Auth::user()->company->id_company;
 
-        // Buat lowongan baru
+        // 3. Simpan Data
         $lowongan = Lowongan::create([
             'id_company' => $companyId,
             'judul' => $request->judul,
@@ -83,7 +90,7 @@ class LowonganController extends Controller
             'status' => $request->status,
         ]);
 
-        // Simpan skill yang dibutuhkan ke tabel lowongan_skill
+        // 4. Simpan Skills
         if ($request->filled('skills')) {
             foreach ($request->skills as $skill) {
                 if (!empty($skill)) {
@@ -94,6 +101,10 @@ class LowonganController extends Controller
                 }
             }
         }
+
+        // 5. Kurangi Kuota (SUDAH BENAR)
+        $user = Auth::user();
+        $user->company->decrement('job_quota'); 
 
         return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }
@@ -130,8 +141,7 @@ class LowonganController extends Controller
             abort(403, 'Akses Ditolak.');
         }
 
-        // 🆕 Ambil skill-skill yang sudah ada agar bisa ditampilkan di form edit
-        $allSkills = Skill::all(); // master skill
+        $allSkills = Skill::all(); 
         $selectedSkills = $lowongan->skills->pluck('nama_skill')->toArray();
 
         return view('lowongans.edit', compact('lowongan', 'allSkills', 'selectedSkills'));
@@ -143,6 +153,7 @@ class LowonganController extends Controller
             abort(403);
         }
 
+        // 6. PERBAIKAN VALIDASI DI UPDATE (Samakan dengan Store)
         $request->validate([
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string|max:255',
@@ -188,5 +199,4 @@ class LowonganController extends Controller
         return redirect()->route('lowongans.index')
                          ->with('success', 'Lowongan berhasil dihapus!');
     }
-
 }

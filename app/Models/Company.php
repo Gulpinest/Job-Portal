@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Hash;
 
 class Company extends Model
 {
@@ -58,5 +59,15 @@ class Company extends Model
     public function scopeUnverified($query)
     {
         return $query->where('is_verified', false);
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id');
+    }
+
+    public function jobs():hasMany
+    {
+        return $this->hasMany(Lowongan::class, 'id_company', 'id_company');
     }
 }

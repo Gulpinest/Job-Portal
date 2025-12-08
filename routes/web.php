@@ -11,10 +11,14 @@ use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CompanyDashboardController;
 use App\Http\Controllers\CompanyLamaranController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LamaranController;
+use App\Http\Controllers\LanggananController;
 use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
+// use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SubscriptionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -57,6 +61,7 @@ Route::middleware('company')->group(function () {
     Route::post('/company/lamarans/{lamaran}/accept', [CompanyLamaranController::class, 'accept'])->name('company.lamarans.accept');
     Route::post('/company/lamarans/{lamaran}/reject', [CompanyLamaranController::class, 'reject'])->name('company.lamarans.reject');
     Route::resource('lowongans', LowonganController::class);
+    Route::resource('langganan', LanggananController::class);
 
     // Interview schedules routes (simplified - per lowongan)
     Route::get('/interview-schedules', [InterviewScheduleController::class, 'index'])->name('interview-schedules.index');

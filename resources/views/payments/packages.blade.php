@@ -33,9 +33,11 @@
                         <p class="text-sm text-green-700">
                             <strong>📦 Paket Aktif:</strong> {{ $company->package->nama_package }}
                         </p>
+                        @if($company->package->duration_months)
                         <p class="text-xs text-green-600 mt-2">
-                            <strong>⏱️ Sisa Durasi:</strong> {{ $company->getRemainingDurationMonths() }} Bulan
+                            <strong>⏱️ Durasi:</strong> {{ $company->package->duration_months }} Bulan
                         </p>
+                        @endif
                         @if($company->subscription_expired_at)
                         <p class="text-xs text-green-600 mt-1">
                             <strong>📅 Berlaku hingga:</strong> {{ $company->subscription_expired_at->format('d M Y') }}

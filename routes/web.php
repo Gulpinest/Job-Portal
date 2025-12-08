@@ -17,6 +17,8 @@ use App\Http\Controllers\LamaranController;
 use App\Http\Controllers\LanggananController;
 use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WebhookController;
 // use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubscriptionController;
 
@@ -63,6 +65,16 @@ Route::middleware('company')->group(function () {
     Route::resource('lowongans', LowonganController::class);
     Route::resource('langganan', LanggananController::class);
 
+    // Payment routes for subscription
+    Route::get('/payments/packages', [PaymentController::class, 'packages'])->name('payments.packages');
+    Route::get('/payments/{package}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
+    Route::post('/payments/{package}/process', [PaymentController::class, 'process'])->name('payments.process');
+    Route::get('/payments/{transaction}/waiting', [PaymentController::class, 'waiting'])->name('payments.waiting');
+    Route::get('/payments/{transaction}/check-status', [PaymentController::class, 'checkStatus'])->name('payments.check-status');
+    Route::get('/payments/{transaction}/success', [PaymentController::class, 'success'])->name('payments.success');
+    Route::get('/payments/{company}/success-free', [PaymentController::class, 'successFree'])->name('payments.success-free');
+    Route::get('/company/payment-history', [PaymentController::class, 'paymentHistory'])->name('company.payment-history');
+
     // Interview schedules routes (simplified - per lowongan)
     Route::get('/interview-schedules', [InterviewScheduleController::class, 'index'])->name('interview-schedules.index');
     Route::get('/lowongans/{lowongan}/interview/create', [InterviewScheduleController::class, 'create'])->name('interview-schedules.create');
@@ -99,5 +111,8 @@ Route::middleware('pelamar')->group(function () {
     Route::resource('skills', SkillController::class);
 
 });
+
+// Webhook Route (no auth middleware) - Accept both GET and POST
+Route::match(['get', 'post'], '/webhook/payment', [WebhookController::class, 'handlePayment'])->name('webhook.payment');
 
 require __DIR__.'/auth.php';

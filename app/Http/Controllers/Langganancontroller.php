@@ -12,9 +12,16 @@ class LanggananController extends Controller
      */
     public function index()
     {
+        $company = auth()->user()->company;
+        
+        if (!$company) {
+            return redirect()->route('company.dashboard')
+                ->with('error', 'Perusahaan tidak ditemukan.');
+        }
+
         $packages = Package::all();
 
-        return view('langganan.index', compact('packages'));
+        return view('langganan.index', compact('packages', 'company'));
     }
 
     /**

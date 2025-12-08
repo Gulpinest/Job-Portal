@@ -33,10 +33,28 @@ class LowonganController extends Controller
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi oleh administrator. Silahkan tunggu persetujuan admin.');
         }
 
-        if ($company->package) {
-            if ($company->job_quota <= 0) {
-                return redirect()->route('pricing')
-                    ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
+        // Check subscription status
+        if (!$company->package_id) {
+            return redirect()->route('payments.packages')
+                ->with('error', 'Silakan pilih paket langganan terlebih dahulu.');
+        }
+
+        // Check if subscription is still active
+        if ($company->subscription_expired_at && $company->subscription_expired_at < now()) {
+            return redirect()->route('payments.packages')
+                ->with('error', 'Paket langganan Anda telah kadaluarsa. Silakan perpanjang langganan.');
+        }
+
+        // Check job limit
+        $package = $company->package;
+        if ($package && $package->job_limit) {
+            $activeJobCount = Lowongan::where('id_company', $company->id_company)
+                ->where('status', 'Open')
+                ->count();
+            
+            if ($activeJobCount >= $package->job_limit) {
+                return redirect()->route('lowongans.index')
+                    ->with('error', "Limit lowongan aktif Anda telah tercapai ({$package->job_limit}). Silakan tutup beberapa lowongan atau upgrade paket.");
             }
         }
 
@@ -56,9 +74,29 @@ class LowonganController extends Controller
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi. Tidak bisa membuat lowongan.');
         }
 
-        if ($company->package && $company->job_quota <= 0) {
-            return redirect()->back()
-                ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
+        // Check subscription status
+        if (!$company->package_id) {
+            return redirect()->route('payments.packages')
+                ->with('error', 'Silakan pilih paket langganan terlebih dahulu.');
+        }
+
+        // Check if subscription is still active
+        if ($company->subscription_expired_at && $company->subscription_expired_at < now()) {
+            return redirect()->route('payments.packages')
+                ->with('error', 'Paket langganan Anda telah kadaluarsa. Silakan perpanjang langganan.');
+        }
+
+        // Check job limit
+        $package = $company->package;
+        if ($package && $package->job_limit) {
+            $activeJobCount = Lowongan::where('id_company', $company->id_company)
+                ->where('status', 'Open')
+                ->count();
+            
+            if ($activeJobCount >= $package->job_limit) {
+                return redirect()->back()
+                    ->with('error', "Limit lowongan aktif Anda telah tercapai ({$package->job_limit}). Silakan tutup beberapa lowongan atau upgrade paket.");
+            }
         }
 
         $request->validate([

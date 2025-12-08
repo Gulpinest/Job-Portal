@@ -50,6 +50,9 @@
                         <x-nav-link :href="route('langganan.index')" :active="request()->routeIs('langganan.*')">
                             {{ __('Langganan') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('company.payment-history')" :active="request()->routeIs('company.payment-history')">
+                            {{ __('Riwayat Pembayaran') }}
+                        </x-nav-link>
                     @elseif (auth()->user()->isAdmin())
                         {{-- Links for Admin --}}
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
@@ -184,6 +187,16 @@
                     <x-responsive-nav-link :href="route('interview-schedules.index')"
                         :active="request()->routeIs('interview-schedules.*')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Jadwal Interview') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('langganan.index')" :active="request()->routeIs('langganan.*')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Langganan') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('company.payment-history')" :active="request()->routeIs('company.payment-history')"
+                        class="text-gray-900 hover:bg-gray-100">
+                        {{ __('Riwayat Pembayaran') }}
                     </x-responsive-nav-link>
 
                 @elseif(auth()->user()->isAdmin())

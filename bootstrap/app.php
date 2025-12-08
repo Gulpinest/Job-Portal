@@ -22,6 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
             // 'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             // 'auth' => \App\Http\Middleware\Authenticate::class,
         ]);
+
+        // Exclude webhook routes from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'webhook/payment',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

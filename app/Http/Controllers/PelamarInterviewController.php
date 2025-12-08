@@ -82,6 +82,11 @@ class PelamarInterviewController extends Controller
     {
         $pelamar = Auth::user()->pelamar;
 
+        if (!$pelamar) {
+        // Jika Pelamar tidak ditemukan, cegah crash dan kembalikan error
+        abort(403, 'Akses ditolak: Data profil pelamar tidak ditemukan.'); 
+        }
+
         // Verify pelamar is in the accepted lamarans for this interview's lowongan
         $accepted = $interview->lowongan->lamarans()
             ->where('id_pelamar', $pelamar->id_pelamar)

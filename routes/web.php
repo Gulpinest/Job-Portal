@@ -19,6 +19,7 @@ use App\Http\Controllers\PelamarLowonganController;
 use App\Http\Controllers\SkillController;
 // use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\MidtransController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,6 +73,8 @@ Route::middleware('company')->group(function () {
     Route::put('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'update'])->name('interview-schedules.update');
     Route::delete('/interview-schedules/{interviewSchedule}', [InterviewScheduleController::class, 'destroy'])->name('interview-schedules.destroy');
     Route::post('/interview-schedules/{interviewSchedule}/completed', [InterviewScheduleController::class, 'markCompleted'])->name('interview-schedules.mark-completed');
+
+    Route::post('/midtrans/create-transaction', [MidtransController::class, 'createTransaction'])->name('midtrans.create');
 });
 
 // Route yang hanya bisa diakses oleh pelamar
@@ -99,5 +102,7 @@ Route::middleware('pelamar')->group(function () {
     Route::resource('skills', SkillController::class);
 
 });
+
+Route::post('/midtrans/notification', [MidtransController::class, 'handleNotification']);
 
 require __DIR__.'/auth.php';

@@ -130,10 +130,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href=""
-                            class="mt-8 w-full block text-center bg-amber-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-amber-600 hover:shadow-amber-500/30 transition duration-300 text-sm uppercase tracking-wide">
+                        <button 
+                            data-package-id="2" 
+                            class="btn-pay mt-8 w-full block text-center bg-amber-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-amber-600 hover:shadow-amber-500/30 transition duration-300 text-sm uppercase tracking-wide">
                             Pilih Paket Standar
-                        </a>
+                        </button>
                     </div>
 
                     <!-- KARTU 3: PAKET PREMIUM (TAHUNAN) -->
@@ -177,10 +178,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href=""
-                            class="mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-indigo-700 hover:shadow-indigo-500/30 transition duration-300 text-sm uppercase tracking-wide">
+                        <button 
+                            data-package-id="3" 
+                            class="btn-pay mt-8 w-full block text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-indigo-700 hover:shadow-indigo-500/30 transition duration-300 text-sm uppercase tracking-wide">
                             Pilih Paket Premium
-                        </a>
+                        </button>
                     </div>
 
                 </div>
@@ -196,58 +198,71 @@
         </div>
     </div>
 
-    <script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+
+    <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
-            const toggle = document.getElementById('billing-toggle');
-            const monthlyLabel = document.getElementById('monthly-label');
-            const yearlyLabel = document.getElementById('yearly-label');
+            
+            const payButtons = document.querySelectorAll('.btn-pay');
+        
+            payButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-            const data = {
-                standard: {
-                    monthly: '499.000',
-                    yearly: '4.990.000',
-                    savings: 'Hemat Rp 998.000'
-                },
-                premium: {
-                    monthly: '999.000',
-                    yearly: '9.990.000',
-                    savings: 'Hemat Rp 1.998.000'
-                }
-            };
-
-            const els = {
-                standard: {
-                    price: document.getElementById('price-standard'),
-                    period: document.getElementById('period-standard')
-                },
-                premium: {
-                    price: document.getElementById('price-premium'),
-                    period: document.getElementById('period-premium')
-                }
-            };
-
-            function updatePrices(isYearly) {
-                const type = isYearly ? 'yearly' : 'monthly';
-                const periodText = isYearly ? '/ tahun' : '/ bulan';
-
-                els.standard.price.innerText = data.standard[type];
-                els.standard.period.innerHTML = isYearly ? periodText + ' <span class="text-amber-500 font-bold text-xs block">' + data.standard.savings + '</span>' : periodText;
-
-                els.premium.price.innerText = data.premium[type];
-                els.premium.period.innerHTML = isYearly ? periodText + ' <span class="text-indigo-500 font-bold text-xs block">' + data.premium.savings + '</span>' : periodText;
-
-                if (isYearly) {
-                    yearlyLabel.classList.add('text-indigo-600');
-                    monthlyLabel.classList.remove('text-indigo-600');
-                } else {
-                    yearlyLabel.classList.remove('text-indigo-600');
-                    monthlyLabel.classList.add('text-indigo-600');
-                }
-            }
-
-            toggle.addEventListener('change', function () {
-                updatePrices(this.checked);
+                    const packageId = this.dataset.packageId;
+                    console.log('1. Tombol diklik. Package ID:', packageId);
+                    // 1. Panggil API Laravel untuk membuat transaksi
+                    fetch('{{ route('midtrans.create') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                        },
+                        // Kirim ID paket ke Controller
+                        body: JSON.stringify({ 
+                            package_id: packageId
+                        }) 
+                    })
+                    .then(response => {
+                        console.log('2. Response status:', response.status); // Cek status: 200/500/401?
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('3. Data diterima dari server:', data);
+                        if(data.token) {
+                            console.log('4. Snap Token berhasil didapat. Memanggil snap.pay().');
+                            // 2. Gunakan Snap Token untuk membuka pop-up Midtrans
+                            snap.pay(data.token, {
+                                onSuccess: function(result){
+                                    alert("Pembayaran Berhasil! Paket Anda akan diaktifkan."); 
+                                    window.location.href = '/company/dashboard'; 
+                                },
+                                onPending: function(result){
+                                    alert("Pembayaran Masih Pending. Silakan ikuti instruksi pembayaran.");
+                                    window.location.href = '/payment/status/' + data.order_id; 
+                                },
+                                onError: function(result){
+                                    alert("Pembayaran Gagal!");
+                                    console.error(result);
+                                },
+                                onClose: function(){
+                                    console.log('Anda menutup pop-up tanpa menyelesaikan pembayaran.');
+                                }
+                            });
+                        } else if (data.error) {
+                            alert('Gagal membuat transaksi: ' + data.error);
+                            console.error('API Error:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Terjadi kesalahan koneksi server.');
+                        console.error('Error:', error);
+                    });
+                });
             });
+
+            // (Jika Anda masih memiliki logika toggle harga yang terpisah di file ini, 
+            // pastikan ia tidak mengganggu logika pembayaran di atas.)
         });
     </script>
 </x-app-layout>

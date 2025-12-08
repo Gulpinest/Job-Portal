@@ -23,11 +23,15 @@ class Company extends Model
         'is_verified',
         'verified_at',
         'rejection_reason',
+        'job_quota',
+        'package_id',
+        'subscription_ends_at',
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
+        'subscription_ends_at' => 'datetime'
     ];
 
     public function user(): BelongsTo

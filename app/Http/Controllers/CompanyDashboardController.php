@@ -11,8 +11,9 @@ class CompanyDashboardController extends Controller
 {
     public function dashboard()
     {
-        $company = Auth::user()->company;
+        $company = Auth::user()->company()->with('package')->first();
 
+        $is_active = $company->subscription_ends_at && $company->subscription_ends_at->isFuture();
         // Statistics
         $totalLowongans = Lowongan::where('id_company', $company->id_company)->count();
         $activeLowongans = Lowongan::where('id_company', $company->id_company)
@@ -50,6 +51,7 @@ class CompanyDashboardController extends Controller
 
         return view('company.dashboard', compact(
             'company',
+            'is_active',
             'totalLowongans',
             'activeLowongans',
             'closedLowongans',

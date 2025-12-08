@@ -8,11 +8,47 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
+            <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Status Langganan Anda</h2>
+            
+            @if ($is_active)
+                <div class="p-4 border-l-4 border-indigo-500 bg-indigo-50">
+                    <p class="text-xl font-semibold text-indigo-700">
+                        Paket Aktif: 
+                        {{ $company->package->name ?? 'N/A' }} 
+                    </p>
+                    <p class="text-gray-600 mt-1">
+                        @if ($company->job_quota > 9000)
+                            Kuota Lowongan Tersisa: <span class="font-bold text-lg">Tidak Terbatas</span>
+                        @else
+                            Kuota Lowongan Tersisa: <span class="font-bold text-lg">{{ $company->job_quota }}</span>
+                        @endif
+                    </p>
+                    <p class="text-gray-600">
+                        Berakhir Pada: 
+                        <span class="font-bold">{{ $company->subscription_ends_at->format('d M Y, H:i') }}</span>
+                    </p>
+                </div>
+            @else
+                <div class="p-4 border-l-4 border-red-500 bg-red-50">
+                    <p class="text-xl text-red-700 font-semibold">
+                        Tidak ada paket aktif.
+                    </p>
+                    <p class="text-gray-600 mt-2">
+                        Kuota Lowongan Tersisa: {{ $company->job_quota }}
+                    </p>
+                    <a href="{{ route('langganan.index') }}" class="mt-3 inline-block bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-150">
+                        Beli Paket Sekarang
+                    </a>
+                </div>
+            @endif
+        </div>
             <!-- 1. HEADER & STATUS -->
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
                 <h3 class="text-3xl font-extrabold text-gray-900 mb-1">Halo, {{ $company->nama_perusahaan }}!</h3>
                 <p class="text-md text-gray-500">Dashboard manajemen lowongan dan pelamar Anda.</p>
 
+                
                 {{-- Verification Status --}}
                 <div class="mt-4 p-3 rounded-xl flex justify-between items-center {{ $company->is_verified ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200' }}">
                     <div>

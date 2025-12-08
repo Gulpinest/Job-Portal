@@ -12,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
+        $middleware->validateCsrfTokens(except: [
+            // Route Midtrans yang tidak memiliki sesi CSRF
+            '/midtrans/notification', 
+        ]);
+
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'admin' => \App\Http\Middleware\admin::class,

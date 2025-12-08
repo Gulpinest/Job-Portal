@@ -35,7 +35,7 @@ class LowonganController extends Controller
 
         if ($company->package) {
             if ($company->job_quota <= 0) {
-                return redirect()->route('pricing')
+                return redirect()->route('langganan.index')
                     ->with('error', 'Kuota lowongan Anda sudah habis. Silakan upgrade paket.');
             }
         }
@@ -76,6 +76,13 @@ class LowonganController extends Controller
 
         // 2. Definisi Company ID (SUDAH BENAR)
         $companyId = Auth::user()->company->id_company;
+
+        if ($company->job_quota <= 0) {
+        return redirect()
+               ->back()
+               ->withInput()
+               ->withErrors(['quota' => 'Kuota lowongan Anda habis. Silakan beli paket langganan untuk menambah kuota.']);
+        }
 
         // 3. Simpan Data
         $lowongan = Lowongan::create([

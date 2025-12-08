@@ -17,6 +17,11 @@
     <!-- Jika Anda menggunakan Laravel Breeze/Jetstream, Tailwind CSS akan otomatis dimuat di sini -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Quill WYSIWYG Editor CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Quill WYSIWYG Editor JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
     <!-- Styling kustom untuk memastikan font Inter digunakan di seluruh body -->
     <style>
         body {

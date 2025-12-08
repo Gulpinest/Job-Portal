@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Delete interview schedules with null tanggal_interview
+        // Delete interview schedules with null waktu_jadwal
         DB::table('interview_schedules')
-            ->whereNull('tanggal_interview')
+            ->whereNull('waktu_jadwal')
             ->delete();
     }
 

@@ -114,7 +114,7 @@ class Company extends Model
 
         // Calculate the difference in months
         $months = $now->diffInMonths($expiry, false);
-        
+
         // If there are remaining days after the month calculation, add 1
         if ($now->copy()->addMonths($months)->lte($expiry)) {
             $days = $now->copy()->addMonths($months)->diffInDays($expiry);

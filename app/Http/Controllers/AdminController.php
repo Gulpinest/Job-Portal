@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Log;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -18,16 +19,26 @@ class AdminController extends Controller
         $totalUsers = User::count();
         $pelamars = User::where('role_id', 2)->count();
         $companies = User::where('role_id', 3)->count();
+        $pendingCompanies = Company::where('is_verified', false)->count();
+        $verifiedCompanies = Company::where('is_verified', true)->count();
         $recentLogs = Log::with('user')
             ->latest()
             ->take(10)
+            ->get();
+        $companiesNeedVerification = Company::where('is_verified', false)
+            ->with('user')
+            ->latest()
+            ->take(5)
             ->get();
 
         return view('admin.dashboard', compact(
             'totalUsers',
             'pelamars',
             'companies',
-            'recentLogs'
+            'pendingCompanies',
+            'verifiedCompanies',
+            'recentLogs',
+            'companiesNeedVerification'
         ));
     }
 

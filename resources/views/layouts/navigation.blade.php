@@ -17,15 +17,15 @@
 
                     @if(auth()->user()->isPelamar())
                         {{-- Links for Pelamar (Job Seeker) --}}
+                        <x-nav-link :href="route('lowongans.pelamar_index')"
+                            :active="request()->routeIs('lowongans.pelamar_index')">
+                            {{ __('Lowongan') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('resumes.index')" :active="request()->routeIs('resumes.*')">
                             {{ __('Resume') }}
                         </x-nav-link>
                         <x-nav-link :href="route('skills.index')" :active="request()->routeIs('skills.*')">
                             {{ __('Skill Saya') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('lowongans.pelamar_index')"
-                            :active="request()->routeIs('lowongans.pelamar_index')">
-                            {{ __('Lowongan') }}
                         </x-nav-link>
                         <x-nav-link :href="route('lowongans.lamaran_saya')"
                             :active="request()->routeIs('lowongans.lamaran_saya')">
@@ -70,9 +70,9 @@
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
                             {{ __('Users') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.logs')" :active="request()->routeIs('admin.logs*')">
+                        {{-- <x-nav-link :href="route('admin.logs')" :active="request()->routeIs('admin.logs*')">
                             {{ __('Logs') }}
-                        </x-nav-link>
+                        </x-nav-link> --}}
                     @endif
                 </div>
             </div>

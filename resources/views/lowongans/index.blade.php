@@ -16,6 +16,12 @@
                     </div>
                 @endif
 
+                 @if (session('error'))
+                    <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 shadow-sm rounded-r-lg">
+                        <p>{{ session('error') }}</p>
+                    </div>
+                @endif
+
                 {{-- Alert: Company Not Verified --}}
                 @if (Auth::user()->company && !Auth::user()->company->is_verified)
                     <div class="mb-6 p-5 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg shadow-md">

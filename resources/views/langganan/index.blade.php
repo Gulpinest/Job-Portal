@@ -119,10 +119,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <form action="{{ route('payments.process', 1) }}" method="POST" class="mt-8">
-                            @csrf
-                            <button type="submit"
-                                class="w-full bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition duration-300 text-sm uppercase tracking-wide">
+                        <form action="" class="mt-8">
+                            <button type="" disabled
+                                class="w-full bg-gray-200 text-white font-bold py-3 px-6 rounded-xl text-sm uppercase tracking-wide">
                                 Pilih Paket Gratis
                             </button>
                         </form>

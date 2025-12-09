@@ -142,7 +142,7 @@ class LowonganController extends Controller
 
         // 5. Kurangi Kuota (SUDAH BENAR)
         $user = Auth::user();
-        $user->company->decrement('job_quota');
+        // $user->company->decrement('job_quota');
 
         return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }

@@ -15,6 +15,7 @@ class InterviewSchedule extends Model
 
     protected $fillable = [
         'id_lowongan',
+        'id_lamaran',
         'waktu_jadwal',
         'lokasi',
         'type',
@@ -29,6 +30,11 @@ class InterviewSchedule extends Model
     public function lowongan(): BelongsTo
     {
         return $this->belongsTo(Lowongan::class, 'id_lowongan');
+    }
+
+    public function lamaran(): BelongsTo
+    {
+        return $this->belongsTo(Lamaran::class, 'id_lamaran');
     }
 
     /**

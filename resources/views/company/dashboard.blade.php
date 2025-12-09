@@ -12,7 +12,7 @@
             @if(!$company->is_verified)
             <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl shadow-lg border-2 border-amber-200 p-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-amber-100 rounded-full -mr-20 -mt-20 opacity-30"></div>
-                
+
                 <div class="relative z-10">
                     <div class="flex items-start gap-4">
                         <div class="flex-shrink-0">
@@ -22,7 +22,7 @@
                                 </svg>
                             </div>
                         </div>
-                        
+
                         <div class="flex-1">
                             <h3 class="text-lg font-bold text-amber-900">⏳ Akun Menunggu Verifikasi Admin</h3>
                             <p class="text-sm text-amber-800 mt-2">
@@ -269,6 +269,11 @@
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             Edit Profil
                         </a>
+                        <a href="{{ route('company.lamarans.index') }}"
+                            class="w-full inline-flex items-center justify-center px-4 py-3 bg-green-500 border border-gray-300 rounded-xl font-semibold text-sm text-white hover:bg-green-600 transition shadow-sm">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Lihat Semua Lamaran
+                        </a>
                     </div>
 
                     <!-- Company Info Card -->
@@ -378,7 +383,7 @@
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3">
                                         <h5 class="font-semibold text-gray-900">{{ $transaction->package->nama_package }}</h5>
-                                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full 
+                                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full
                                             @if($transaction->payment_status === 'completed')
                                                 bg-green-100 text-green-800
                                             @elseif($transaction->payment_status === 'pending')
@@ -408,7 +413,7 @@
                                         <strong>No. Transaksi:</strong> {{ $transaction->transaction_number }}
                                     </p>
                                     <p class="text-sm text-gray-600 mt-1">
-                                        <strong>Durasi:</strong> 
+                                        <strong>Durasi:</strong>
                                         @if($transaction->package->duration_months)
                                             {{ $transaction->package->duration_months }} Bulan
                                         @else

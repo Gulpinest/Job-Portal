@@ -183,16 +183,42 @@
                             </form>
                         </dialog>
                     @elseif ($lamaran->status_ajuan === 'Accepted')
-                        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center">
-                            <p class="text-gray-600 text-sm mb-4">Lamaran telah diterima</p>
-                            @if($lamaran->lowongan->interviewSchedule)
-                                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                                    <p class="text-blue-700 font-semibold text-sm">Wawancara sudah dijadwalkan</p>
-                                    <p class="text-blue-600 text-xs mt-1">{{ $lamaran->lowongan->interviewSchedule->tanggal_interview->format('d M Y H:i') }}</p>
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-3">Jadwal Wawancara</h3>
+
+                            @php
+                                $interviewSchedule = $lamaran->interviewSchedule;
+                                $lowonganSchedules = $lamaran->lowongan->interviewSchedules;
+                            @endphp
+
+                            @if($interviewSchedule)
+                                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                                    <p class="text-blue-700 font-semibold text-sm">✓ Wawancara untuk lamaran ini sudah dijadwalkan</p>
+                                    <p class="text-blue-600 text-xs mt-2"><strong>Tanggal:</strong> {{ $interviewSchedule->waktu_jadwal->format('d M Y H:i') }}</p>
+                                    <p class="text-blue-600 text-xs"><strong>Lokasi:</strong> {{ $interviewSchedule->lokasi }}</p>
+                                    <p class="text-blue-600 text-xs"><strong>Tipe:</strong> {{ $interviewSchedule->type }}</p>
                                 </div>
-                            @else
-                                <a href="{{ route('interview-schedules.create', $lamaran->lowongan) }}" class="inline-block mt-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition text-sm">
-                                    Jadwalkan Wawancara di Lowongan Ini
+                            @endif
+
+                            @if($lowonganSchedules->isNotEmpty())
+                                <div class="mb-4">
+                                    <p class="text-sm font-semibold text-gray-700 mb-2">Jadwal Lowongan yang Tersedia:</p>
+                                    <div class="space-y-2">
+                                        @foreach($lowonganSchedules as $schedule)
+                                            <div class="bg-gray-50 border border-gray-300 rounded-lg p-3 text-sm">
+                                                <p class="text-gray-700"><strong>{{ $schedule->waktu_jadwal->format('d M Y H:i') }}</strong></p>
+                                                <p class="text-gray-600">📍 {{ $schedule->lokasi }}</p>
+                                                <p class="text-gray-600">{{ ucfirst($schedule->type) }}</p>
+                                                <p class="text-gray-500 text-xs mt-1">Status: <span class="font-semibold">{{ $schedule->status }}</span></p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if(!$interviewSchedule)
+                                <a href="{{ route('interview-schedules.create', $lamaran->lowongan) }}" class="inline-block w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition text-sm text-center">
+                                    + Jadwalkan Wawancara untuk Pelamar Ini
                                 </a>
                             @endif
                         </div>

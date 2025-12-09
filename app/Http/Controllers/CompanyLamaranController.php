@@ -89,7 +89,12 @@ class CompanyLamaranController extends Controller
             abort(403, 'Anda tidak memiliki akses ke lamaran ini');
         }
 
-        $lamaran->load(['pelamar.user', 'lowongan', 'resume']);
+        $lamaran->load([
+            'pelamar.user',
+            'lowongan.interviewSchedules',
+            'resume',
+            'interviewSchedule'
+        ]);
 
         return view('company.lamarans.show', compact('lamaran'));
     }

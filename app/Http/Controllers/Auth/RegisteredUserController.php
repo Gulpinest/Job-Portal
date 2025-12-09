@@ -85,6 +85,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => 3, // Role Company
+            'package_id' => 1, // Default paket gratis
         ]);
 
         $company = Company::create([

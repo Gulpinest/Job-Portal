@@ -33,11 +33,11 @@ class LowonganController extends Controller
                             ->with('error', 'Akun perusahaan Anda belum diverifikasi oleh administrator. Silahkan tunggu persetujuan admin.');
         }
 
-        // // Check subscription status
-        // if (!$company->package_id) {
-        //     return redirect()->route('payments.packages')
-        //         ->with('error', 'Silakan pilih paket langganan terlebih dahulu.');
-        // }
+        // Check subscription status
+        if (!$company->package_id) {
+            return redirect()->route('payments.packages')
+                ->with('error', 'Silakan pilih paket langganan terlebih dahulu.');
+        }
 
         // Check if subscription is still active
         if ($company->subscription_expired_at && $company->subscription_expired_at < now()) {
@@ -51,7 +51,7 @@ class LowonganController extends Controller
             $activeJobCount = Lowongan::where('id_company', $company->id_company)
                 ->where('status', 'Open')
                 ->count();
-            
+
             if ($activeJobCount >= $package->job_limit) {
                 return redirect()->route('lowongans.index')
                     ->with('error', "Limit lowongan aktif Anda telah tercapai ({$package->job_limit}). Silakan tutup beberapa lowongan atau upgrade paket.");
@@ -92,11 +92,11 @@ class LowonganController extends Controller
             $activeJobCount = Lowongan::where('id_company', $company->id_company)
                 ->where('status', 'Open')
                 ->count();
-            
-            // if ($activeJobCount >= $package->job_limit) {
-            //     return redirect()->back()
-            //         ->with('error', "Limit lowongan aktif Anda telah tercapai ({$package->job_limit}). Silakan tutup beberapa lowongan atau upgrade paket.");
-            // }
+
+            if ($activeJobCount >= $package->job_limit) {
+                return redirect()->back()
+                    ->with('error', "Limit lowongan aktif Anda telah tercapai ({$package->job_limit}). Silakan tutup beberapa lowongan atau upgrade paket.");
+            }
         }
 
         $request->validate([
@@ -142,7 +142,7 @@ class LowonganController extends Controller
 
         // 5. Kurangi Kuota (SUDAH BENAR)
         $user = Auth::user();
-        // $user->company->decrement('job_quota'); 
+        $user->company->decrement('job_quota');
 
         return redirect()->route('lowongans.index')->with('success', 'Lowongan baru berhasil ditambahkan!');
     }
@@ -179,7 +179,7 @@ class LowonganController extends Controller
             abort(403, 'Akses Ditolak.');
         }
 
-        $allSkills = Skill::all(); 
+        $allSkills = Skill::all();
         $selectedSkills = $lowongan->skills->pluck('nama_skill')->toArray();
 
         return view('lowongans.edit', compact('lowongan', 'allSkills', 'selectedSkills'));

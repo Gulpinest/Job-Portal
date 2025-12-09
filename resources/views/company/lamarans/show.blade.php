@@ -97,6 +97,31 @@
                         @endif
                     </div>
 
+                    {{-- CV Document --}}
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">CV Pelamar</h3>
+
+                        @if ($lamaran->cv)
+                            <div class="space-y-4">
+                                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-3">File CV tersedia untuk diunduh:</p>
+                                    <a href="{{ asset('storage/' . $lamaran->cv) }}" 
+                                       target="_blank" 
+                                       download
+                                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg hover:bg-blue-700 transition shadow-md">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                        </svg>
+                                        Unduh CV
+                                    </a>
+                                    <p class="text-xs text-gray-500 mt-2">File: {{ basename($lamaran->cv) }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-gray-600 italic">CV tidak tersedia</p>
+                        @endif
+                    </div>
+
                 </div>
 
                 {{-- Sidebar: Actions --}}

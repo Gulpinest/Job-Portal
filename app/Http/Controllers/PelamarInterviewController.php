@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InterviewSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PelamarInterviewController extends Controller
 {
@@ -35,7 +36,7 @@ class PelamarInterviewController extends Controller
         ->when($request->filled('status'), function ($query) use ($request) {
             $query->where('status', $request->status);
         })
-        ->latest('tanggal_interview')
+        ->latest('waktu_jadwal')
         ->paginate(10);
 
         // Statistics
@@ -48,7 +49,7 @@ class PelamarInterviewController extends Controller
             $query->where('id_pelamar', $pelamar->id_pelamar)
                   ->where('status_ajuan', 'Accepted');
         })
-        ->where('tanggal_interview', '>=', now())
+        ->where('waktu_jadwal', '>=', now())
         ->where('status', 'Scheduled')
         ->count();
 
@@ -78,73 +79,15 @@ class PelamarInterviewController extends Controller
     /**
      * Show interview detail
      */
-    public function show(InterviewSchedule $interview)
+    public function show($id)
     {
-        $pelamar = Auth::user()->pelamar;
-
-        // Verify pelamar is in the accepted lamarans for this interview's lowongan
-        $accepted = $interview->lowongan->lamarans()
-            ->where('id_pelamar', $pelamar->id_pelamar)
-            ->where('status_ajuan', 'Accepted')
-            ->exists();
-
-        if (!$accepted) {
-            abort(403);
-        }
-
-        $interview->load(['lowongan.company']);
-
+        $interview = InterviewSchedule::where('id', $id)
+            ->with(['lowongan.company', 'lowongan.lamarans' => function ($q) {
+                $q->where('id_pelamar', Auth::user()->pelamar->id_pelamar)
+                  ->where('status_ajuan', 'Accepted');
+            }])
+            ->firstOrFail();
+        // dd($interview);
         return view('pelamar.interviews.show', compact('interview'));
-    }
-
-    /**
-     * Mark interview as attended/completed by pelamar
-     */
-    public function markAttended(InterviewSchedule $interview)
-    {
-        $pelamar = Auth::user()->pelamar;
-
-        // Verify ownership
-        $accepted = $interview->lowongan->lamarans()
-            ->where('id_pelamar', $pelamar->id_pelamar)
-            ->where('status_ajuan', 'Accepted')
-            ->exists();
-
-        if (!$accepted) {
-            abort(403);
-        }
-
-        if ($interview->status === 'Scheduled') {
-            $interview->update(['status' => 'Completed']);
-        }
-
-        return redirect()->back()->with('success', 'Wawancara ditandai sebagai selesai!');
-    }
-
-    /**
-     * Cancel/Decline interview by pelamar
-     */
-    public function decline(Request $request, InterviewSchedule $interview)
-    {
-        $pelamar = Auth::user()->pelamar;
-
-        // Verify ownership
-        $accepted = $interview->lowongan->lamarans()
-            ->where('id_pelamar', $pelamar->id_pelamar)
-            ->where('status_ajuan', 'Accepted')
-            ->exists();
-
-        if (!$accepted) {
-            abort(403);
-        }
-
-        $request->validate([
-            'alasan_pembatalan' => 'nullable|string|max:500',
-        ]);
-
-        $interview->update(['status' => 'Cancelled']);
-
-        return redirect()->route('pelamar.interviews.index')
-                        ->with('success', 'Wawancara berhasil dibatalkan!');
     }
 }

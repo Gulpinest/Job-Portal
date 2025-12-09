@@ -9,6 +9,7 @@ use App\Models\Pelamar;
 use App\Models\Resume;
 use App\Models\Roles;
 use App\Models\User;
+use App\Models\InterviewSchedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -252,6 +253,18 @@ class TestDataSeeder extends Seeder
                 'id_resume' => $resume2->id_resume,
                 'cv' => null,
                 'status_ajuan' => 'Rejected',
+            ]);
+        }
+
+        // Create interview schedule for frontend job with accepted applicant
+        if ($frontendJob && !InterviewSchedule::where('id_lowongan', $frontendJob->id_lowongan)->exists()) {
+            InterviewSchedule::create([
+                'id_lowongan' => $frontendJob->id_lowongan,
+                'waktu_jadwal' => now()->addDays(7)->setTime(10, 0),
+                'lokasi' => 'Bandung - Meeting Room 3 / Zoom: https://zoom.us/j/123456',
+                'type' => 'Hybrid',
+                'catatan' => 'Persiapkan portfolio dan siap diskusi tentang project terdahulu.',
+                'status' => 'Scheduled',
             ]);
         }
     }

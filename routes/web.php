@@ -105,8 +105,6 @@ Route::middleware('pelamar')->group(function () {
     // Pelamar interview schedules
     Route::get('/jadwal-wawancara', [PelamarInterviewController::class, 'index'])->name('pelamar.interviews.index');
     Route::get('/jadwal-wawancara/{interviewSchedule}', [PelamarInterviewController::class, 'show'])->name('pelamar.interviews.show');
-    Route::post('/jadwal-wawancara/{interviewSchedule}/hadir', [PelamarInterviewController::class, 'markAttended'])->name('pelamar.interviews.mark-attended');
-    Route::post('/jadwal-wawancara/{interviewSchedule}/batalkan', [PelamarInterviewController::class, 'decline'])->name('pelamar.interviews.decline');
 
     Route::resource('skills', SkillController::class);
 

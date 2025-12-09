@@ -29,7 +29,7 @@ class InterviewScheduleController extends Controller
         ->when($request->filled('status'), function ($query) use ($request) {
             $query->where('status', $request->status);
         })
-        ->latest('tanggal_interview')
+        ->latest('waktu_jadwal')
         ->paginate(10);
 
         // Statistics
@@ -40,7 +40,7 @@ class InterviewScheduleController extends Controller
         $upcomingSchedules = InterviewSchedule::whereHas('lowongan', function ($query) use ($company) {
             $query->where('id_company', $company->id_company);
         })
-        ->where('tanggal_interview', '>=', now())
+        ->where('waktu_jadwal', '>=', now())
         ->where('status', 'Scheduled')
         ->count();
 
@@ -105,10 +105,9 @@ class InterviewScheduleController extends Controller
         }
 
         $validated = $request->validate([
-            'tanggal_interview' => 'required|date|after:now',
-            'jam_interview' => 'required|date_format:H:i',
+            'waktu_jadwal' => 'required|date_format:Y-m-d\TH:i|after:now',
             'lokasi' => 'required|string|max:500',
-            'tipe' => 'required|in:Online,Offline',
+            'type' => 'required|in:Online,Offline',
             'catatan' => 'nullable|string|max:1000',
         ]);
 
@@ -117,14 +116,11 @@ class InterviewScheduleController extends Controller
             return redirect()->back()->with('error', 'Wawancara sudah dijadwalkan untuk lowongan ini.');
         }
 
-        // Combine date and time
-        $dateTime = $validated['tanggal_interview'] . ' ' . $validated['jam_interview'];
-
         InterviewSchedule::create([
             'id_lowongan' => $lowongan->id_lowongan,
-            'waktu_jadwal' => $dateTime,
+            'waktu_jadwal' => $validated['waktu_jadwal'],
             'lokasi' => $validated['lokasi'],
-            'type' => $validated['tipe'],
+            'type' => $validated['type'],
             'catatan' => $validated['catatan'],
             'status' => 'Scheduled',
         ]);
@@ -145,7 +141,9 @@ class InterviewScheduleController extends Controller
             abort(403);
         }
 
-        $interviewSchedule->load(['lowongan']);
+        $interviewSchedule->load(['lowongan', 'lowongan.lamarans' => function ($q) {
+            $q->where('status_ajuan', 'Accepted');
+        }]);
 
         return view('company.interviews.show', compact('interviewSchedule'));
     }

@@ -89,11 +89,14 @@
 
                     <!-- Daftar Pelamar yang Mengikuti Wawancara -->
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-                        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Pelamar yang Mengikuti Wawancara ({{ $interviewSchedule->lamarans->count() }})</h3>
+                        @php
+                            $lamaransCollection = $interviewSchedule->lowongan?->lamarans ?? collect([]);
+                        @endphp
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Pelamar yang Mengikuti Wawancara ({{ $lamaransCollection->count() }})</h3>
 
-                        @if($interviewSchedule->lamarans->count() > 0)
+                        @if($lamaransCollection->count() > 0)
                             <div class="space-y-3">
-                                @foreach($interviewSchedule->lamarans as $lamaran)
+                                @foreach($lamaransCollection as $lamaran)
                                     <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition">
                                         <div class="flex-1">
                                             <p class="font-semibold text-gray-900">{{ $lamaran->pelamar->user->name }}</p>

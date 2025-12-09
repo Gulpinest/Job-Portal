@@ -70,22 +70,12 @@
                 <form method="POST" action="{{ route('interview-schedules.store', $lowongan) }}" class="space-y-6">
                     @csrf
 
-                    <!-- Tanggal Wawancara -->
+                    <!-- Tanggal & Waktu Wawancara -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Wawancara <span class="text-red-600">*</span></label>
-                        <input type="date" name="tanggal_interview" required value="{{ old('tanggal_interview') }}"
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal & Waktu Wawancara <span class="text-red-600">*</span></label>
+                        <input type="datetime-local" name="waktu_jadwal" required value="{{ old('waktu_jadwal') }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900">
-                        @error('tanggal_interview')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Jam Wawancara -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Jam Wawancara <span class="text-red-600">*</span></label>
-                        <input type="time" name="jam_interview" required value="{{ old('jam_interview') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-gray-900">
-                        @error('jam_interview')
+                        @error('waktu_jadwal')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -95,17 +85,17 @@
                         <label class="block text-sm font-bold text-gray-700 mb-2">Tipe Wawancara <span class="text-red-600">*</span></label>
                         <div class="space-y-2">
                             <label class="flex items-center">
-                                <input type="radio" name="tipe" value="Online" @checked(old('tipe') === 'Online')
+                                <input type="radio" name="type" value="Online" @checked(old('type') === 'Online')
                                     class="rounded-full text-indigo-600 focus:ring-indigo-500 mr-3 border-gray-300">
                                 <span class="text-gray-700">Online</span>
                             </label>
                             <label class="flex items-center">
-                                <input type="radio" name="tipe" value="Offline" @checked(old('tipe') === 'Offline')
+                                <input type="radio" name="type" value="Offline" @checked(old('type') === 'Offline')
                                     class="rounded-full text-indigo-600 focus:ring-indigo-500 mr-3 border-gray-300">
                                 <span class="text-gray-700">Offline</span>
                             </label>
                         </div>
-                        @error('tipe')
+                        @error('type')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>

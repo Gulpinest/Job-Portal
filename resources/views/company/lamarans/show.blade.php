@@ -105,8 +105,8 @@
                             <div class="space-y-4">
                                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                     <p class="text-sm text-gray-600 mb-3">File CV tersedia untuk diunduh:</p>
-                                    <a href="{{ asset('storage/' . $lamaran->cv) }}" 
-                                       target="_blank" 
+                                    <a href="{{ asset('storage/' . $lamaran->cv) }}"
+                                       target="_blank"
                                        download
                                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg hover:bg-blue-700 transition shadow-md">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -161,7 +161,7 @@
                             <ul class="space-y-4 text-gray-700 text-sm">
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
-                                    <span><strong class="font-semibold text-gray-900">25 Lowongan
+                                    <span><strong class="font-semibold text-gray-900">Unlimited Lowongan
                                             Pekerjaan</strong></span>
                                 </li>
                                 <li class="flex items-start">
@@ -214,7 +214,7 @@
                             <ul class="space-y-4 text-gray-700 text-sm">
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
-                                    <span><strong class="font-semibold text-gray-900">50 Lowongan
+                                    <span><strong class="font-semibold text-gray-900">Unlimited Lowongan
                                             Pekerjaan</strong></span>
                                 </li>
                                 <li class="flex items-start">

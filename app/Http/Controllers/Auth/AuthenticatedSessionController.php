@@ -39,12 +39,12 @@ class AuthenticatedSessionController extends Controller
         }
 
             if ($user->isPelamar()) {
-            return redirect()->route('dashboard'); // Pelamar pakai dashboard biasa
+            return redirect()->route('lowongans.pelamar_index'); // Pelamar pakai dashboard biasa
         }
 
             // Default fallback
             return redirect()->route('dashboard');
-    }
+        }
 
 
     /**

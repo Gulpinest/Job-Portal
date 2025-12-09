@@ -14,8 +14,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .5;
+            }
         }
     </style>
 
@@ -29,53 +36,57 @@
                         Tingkatkan paket Anda untuk membuka lebih banyak fitur dan limit lowongan yang lebih tinggi.
                     </p>
                     @if($company->package && $company->isSubscriptionActive())
-                    <div class="inline-block bg-green-50 border border-green-200 rounded-lg px-6 py-3 mt-4">
-                        <p class="text-sm text-green-700">
-                            <strong>📦 Paket Aktif:</strong> {{ $company->package->nama_package }}
-                        </p>
-                        <p class="text-xs text-green-600 mt-2">
-                            <strong>⏱️ Sisa Durasi:</strong> {{ $company->getRemainingDurationMonths() }} Bulan
-                        </p>
-                        @if($company->subscription_expired_at)
-                        <p class="text-xs text-green-600 mt-1">
-                            <strong>📅 Berlaku hingga:</strong> {{ $company->subscription_expired_at->format('d M Y') }}
-                            <span class="ml-2 font-bold">({{ now()->diffInDays($company->subscription_expired_at) }} hari lagi)</span>
-                        </p>
-                        @endif
-                        <p class="text-xs text-green-600 mt-2 font-semibold">
-                            💡 Pilih paket di bawah untuk perpanjang atau upgrade langganan Anda
-                        </p>
-                    </div>
+                        <div class="inline-block bg-green-50 border border-green-200 rounded-lg px-6 py-3 mt-4">
+                            <p class="text-sm text-green-700">
+                                <strong>📦 Paket Aktif:</strong> {{ $company->package->nama_package }}
+                            </p>
+                            <p class="text-xs text-green-600 mt-2">
+                                <strong>⏱️ Sisa Durasi:</strong> {{ $company->getRemainingDurationMonths() }} Bulan
+                            </p>
+                            @if($company->subscription_expired_at)
+                                <p class="text-xs text-green-600 mt-1">
+                                    <strong>📅 Berlaku hingga:</strong> {{ $company->subscription_expired_at->format('d M Y') }}
+                                    <span class="ml-2 font-bold">({{ now()->diffInDays($company->subscription_expired_at) }}
+                                        hari lagi)</span>
+                                </p>
+                            @endif
+                            <p class="text-xs text-green-600 mt-2 font-semibold">
+                                💡 Pilih paket di bawah untuk perpanjang atau upgrade langganan Anda
+                            </p>
+                        </div>
                     @elseif($company->package && !$company->isSubscriptionActive())
-                    <div class="inline-block bg-amber-50 border border-amber-200 rounded-lg px-6 py-3 mt-4">
-                        <p class="text-sm text-amber-700">
-                            <strong>📦 Paket Terakhir:</strong> {{ $company->package->nama_package }}
-                        </p>
-                        @if($company->subscription_expired_at)
-                        <p class="text-xs text-amber-600 mt-1">
-                            <strong>❌ Berakhir:</strong> {{ $company->subscription_expired_at->format('d M Y') }}
-                            <span class="ml-2 font-bold text-red-600">(Expired)</span>
-                        </p>
-                        @endif
-                        <p class="text-xs text-amber-600 mt-2 font-semibold">
-                            💡 Perpanjang langganan Anda sekarang untuk melanjutkan akses penuh
-                        </p>
-                    </div>
+                        <div class="inline-block bg-amber-50 border border-amber-200 rounded-lg px-6 py-3 mt-4">
+                            <p class="text-sm text-amber-700">
+                                <strong>📦 Paket Terakhir:</strong> {{ $company->package->nama_package }}
+                            </p>
+                            @if($company->subscription_expired_at)
+                                <p class="text-xs text-amber-600 mt-1">
+                                    <strong>❌ Berakhir:</strong> {{ $company->subscription_expired_at->format('d M Y') }}
+                                    <span class="ml-2 font-bold text-red-600">(Expired)</span>
+                                </p>
+                            @endif
+                            <p class="text-xs text-amber-600 mt-2 font-semibold">
+                                💡 Perpanjang langganan Anda sekarang untuk melanjutkan akses penuh
+                            </p>
+                        </div>
                     @endif
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 
                     <!-- KARTU 1: PAKET GRATIS -->
-                    <div class="package-card bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-between border border-gray-200 relative overflow-hidden">
+                    <div
+                        class="package-card bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-between border border-gray-200 relative overflow-hidden">
                         @if($company->package_id == 1)
-                        <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
-                            Paket Aktif
-                        </div>
+                            <div
+                                class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
+                                Paket Aktif
+                            </div>
                         @endif
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-2">Paket Gratis</h2>
-                            <p class="text-sm text-gray-500 mb-6 h-10">Cocok untuk startup yang baru memulai rekrutmen.</p>
+                            <p class="text-sm text-gray-500 mb-6 h-10">Cocok untuk startup yang baru memulai rekrutmen.
+                            </p>
 
                             <div class="mb-8">
                                 <p class="text-5xl font-extrabold text-gray-900">
@@ -87,7 +98,8 @@
                             <ul class="space-y-4 text-gray-700 text-sm">
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
-                                    <span><strong class="font-semibold text-gray-900">2</strong> Lowongan Aktif Maksimal</span>
+                                    <span><strong class="font-semibold text-gray-900">2</strong> Lowongan Aktif
+                                        Maksimal</span>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
@@ -117,19 +129,23 @@
                     </div>
 
                     <!-- KARTU 2: PREMIUM 6 BULAN -->
-                    <div class="package-card bg-white p-8 rounded-2xl shadow-xl flex flex-col justify-between border-2 border-amber-500 transform md:scale-105 relative z-10">
+                    <div
+                        class="package-card bg-white p-8 rounded-2xl shadow-xl flex flex-col justify-between border-2 border-amber-500 transform md:scale-105 relative z-10">
                         @if($company->package_id == 2)
-                        <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
-                            Paket Aktif
-                        </div>
+                            <div
+                                class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
+                                Paket Aktif
+                            </div>
                         @else
-                        <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg">
-                            Paling Populer
-                        </div>
+                            <div
+                                class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg">
+                                Paling Populer
+                            </div>
                         @endif
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-2">Premium 6 Bulan</h2>
-                            <p class="text-sm text-gray-500 mb-6 h-10">Paket fleksibel untuk perusahaan yang berkembang.</p>
+                            <p class="text-sm text-gray-500 mb-6 h-10">Paket fleksibel untuk perusahaan yang berkembang.
+                            </p>
 
                             <div class="mb-8 transition-all duration-300 ease-in-out">
                                 <p class="text-5xl font-extrabold text-amber-500 flex items-baseline">
@@ -145,7 +161,8 @@
                             <ul class="space-y-4 text-gray-700 text-sm">
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
-                                    <span><strong class="font-semibold text-gray-900">Lowongan Tak Terbatas</strong></span>
+                                    <span><strong class="font-semibold text-gray-900">25 Lowongan
+                                            Pekerjaan</strong></span>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
@@ -170,15 +187,18 @@
                     </div>
 
                     <!-- KARTU 3: PREMIUM 12 BULAN -->
-                    <div class="package-card bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-between border border-gray-200 relative overflow-hidden">
+                    <div
+                        class="package-card bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-between border border-gray-200 relative overflow-hidden">
                         @if($company->package_id == 3)
-                        <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
-                            Paket Aktif
-                        </div>
+                            <div
+                                class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase py-1 px-3 rounded-bl-lg active-badge">
+                                Paket Aktif
+                            </div>
                         @endif
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-2">Premium 12 Bulan</h2>
-                            <p class="text-sm text-gray-500 mb-6 h-10">Komitmen penuh untuk hasil maksimal dalam rekrutmen.</p>
+                            <p class="text-sm text-gray-500 mb-6 h-10">Komitmen penuh untuk hasil maksimal dalam
+                                rekrutmen.</p>
 
                             <div class="mb-8 transition-all duration-300 ease-in-out">
                                 <p class="text-5xl font-extrabold text-indigo-600 flex items-baseline">
@@ -194,7 +214,8 @@
                             <ul class="space-y-4 text-gray-700 text-sm">
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
-                                    <span><strong class="font-semibold text-gray-900">Lowongan Tak Terbatas</strong></span>
+                                    <span><strong class="font-semibold text-gray-900">50 Lowongan
+                                            Pekerjaan</strong></span>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="text-green-500 mr-2 font-bold text-lg">✓</span>
@@ -222,7 +243,8 @@
 
                 <div class="text-center mt-12 pt-8 border-t border-gray-100">
                     <p class="text-gray-400 text-xs">
-                        *Semua harga dalam Rupiah. Jika Anda membeli paket premium saat sudah memiliki langganan aktif, masa berlaku langganan akan diperpanjang.
+                        *Semua harga dalam Rupiah. Jika Anda membeli paket premium saat sudah memiliki langganan aktif,
+                        masa berlaku langganan akan diperpanjang.
                         <br>Untuk bantuan lebih lanjut, silakan hubungi tim support kami.
                     </p>
                 </div>

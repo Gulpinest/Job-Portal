@@ -10,10 +10,10 @@
                 </div>
 
                 <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex items-center">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                    {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                         class="font-medium text-sm rounded-lg px-3 py-2 text-gray-900 hover:bg-gray-100 transition duration-150">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
 
                     @if(auth()->user()->isPelamar())
                         {{-- Links for Pelamar (Job Seeker) --}}
@@ -37,7 +37,8 @@
                         </x-nav-link>
                     @elseif (auth()->user()->isCompany())
                         {{-- Links for Company --}}
-                        <x-nav-link :href="route('company.dashboard')" :active="request()->routeIs('company.dashboard')">
+                        <x-nav-link class="text-indigo-600" :href="route('company.dashboard')"
+                            :active="request()->routeIs('company.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
                         <x-nav-link :href="route('lowongans.index')" :active="request()->routeIs('lowongans.index')">
@@ -50,7 +51,8 @@
                         <x-nav-link :href="route('langganan.index')" :active="request()->routeIs('langganan.*')">
                             {{ __('Langganan') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('company.payment-history')" :active="request()->routeIs('company.payment-history')">
+                        <x-nav-link :href="route('company.payment-history')"
+                            :active="request()->routeIs('company.payment-history')">
                             {{ __('Riwayat Pembayaran') }}
                         </x-nav-link>
                     @elseif (auth()->user()->isAdmin())
@@ -140,7 +142,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                class="text-gray-900 hover:bg-gray-100 {{ request()->routeIs('dashboard') ? 'text-indigo-600 font-bold' : '' }}">
+                class="text-indigo-600 hover:bg-gray-100 {{ request()->routeIs('dashboard') ? 'text-indigo-600 font-bold' : '' }}">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
@@ -175,7 +177,7 @@
                 @elseif(auth()->user()->isCompany())
                     {{-- Mobile Links for Company --}}
                     <x-responsive-nav-link :href="route('company.dashboard')" :active="request()->routeIs('company.dashboard')"
-                        class="text-gray-900 hover:bg-gray-100">
+                        class="text-indigo-600 hover:bg-gray-100">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
 
@@ -194,8 +196,8 @@
                         {{ __('Langganan') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('company.payment-history')" :active="request()->routeIs('company.payment-history')"
-                        class="text-gray-900 hover:bg-gray-100">
+                    <x-responsive-nav-link :href="route('company.payment-history')"
+                        :active="request()->routeIs('company.payment-history')" class="text-gray-900 hover:bg-gray-100">
                         {{ __('Riwayat Pembayaran') }}
                     </x-responsive-nav-link>
 

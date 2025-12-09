@@ -84,21 +84,6 @@
                 Explore thousands of active job listings from top companies worldwide. Your dream career is just a
                 search away.
             </p>
-
-            <!-- Search Bar -->
-            <div
-                class="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-3 w-full">
-                    <input type="text" placeholder="Job Title, Keywords, or Company"
-                        class="flex-grow px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-xl placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-900 transition duration-150" />
-                    <input type="text" placeholder="Location (City, State, or Remote)"
-                        class="flex-grow px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-xl placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-900 transition duration-150" />
-                    <button
-                        class="px-8 py-4 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition duration-150 shadow-lg shadow-indigo-500/50">
-                        Search Jobs
-                    </button>
-                </div>
-            </div>
         </section>
 
         <!-- Stats Section -->
@@ -135,8 +120,10 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
 
                 <!-- Category Cards (contoh 1) -->
+                <!-- 1. Design & Creative -->
                 <a href="#"
                     class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Design (Pencil/Edit) -->
                     <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,6 +134,101 @@
                     <span class="text-sm font-semibold text-red-500 mt-1">(653)</span>
                 </a>
 
+                <!-- 2. Development & IT -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Code/Development (Brackets) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Development & IT</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(890)</span>
+                </a>
+
+                <!-- 3. Sales & Marketing -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Sales/Money (Target/Coin) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2v5m0-5c1.657 0 3-.895 3-2s-1.343-2-3-2zM21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Sales & Marketing</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(450)</span>
+                </a>
+
+                <!-- 4. Mobile Application -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Mobile (Phone) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Mobile Application</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(320)</span>
+                </a>
+
+                <!-- 5. Construction -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Construction (Helmet) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v14m12 0v-5m0 5a2 2 0 01-2 2H8a2 2 0 01-2-2v-3a2 2 0 00-2-2H4V8a2 2 0 012-2h4a2 2 0 012 2v2m0 10h4a2 2 0 002-2v-6a2 2 0 00-2-2h-4a2 2 0 00-2 2v6a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Construction</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(198)</span>
+                </a>
+
+                <!-- 6. Information Technology -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for IT (Server/Database) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Information Technology</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(788)</span>
+                </a>
+
+                <!-- 7. Real Estate -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Real Estate (Building) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-6a2 2 0 012-2h2a2 2 0 012 2v6">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Real Estate</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(210)</span>
+                </a>
+
+                <!-- 8. Content Writer -->
+                <a href="#"
+                    class="p-6 flex flex-col items-center text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700">
+                    <!-- Icon for Content Writer (Document/Paper) -->
+                    <svg class="category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m-6-8h6M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Content Writer</span>
+                    <span class="text-sm font-semibold text-red-500 mt-1">(155)</span>
+                </a>
                 <!-- Category Cards lainnya bisa ditambahkan sama seperti template di atas -->
             </div>
         </section>

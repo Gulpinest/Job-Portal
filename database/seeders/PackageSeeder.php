@@ -27,7 +27,7 @@ class PackageSeeder extends Seeder
                 'name' => 'Premium - 6 Bulan',
                 'nama_package' => 'Premium - 6 Bulan',
                 'price' => 4500000,
-                'job_limit' => null, // NULL = unlimited
+                'job_limit' => 25, // NULL = unlimited
                 'duration_months' => 6,
                 'description' => 'Paket premium selama 6 bulan dengan lowongan tak terbatas.',
                 'created_at' => now(),
@@ -37,7 +37,7 @@ class PackageSeeder extends Seeder
                 'name' => 'Premium - 12 Bulan',
                 'nama_package' => 'Premium - 12 Bulan',
                 'price' => 8000000,
-                'job_limit' => null, // NULL = unlimited
+                'job_limit' => 50, // NULL = unlimited
                 'duration_months' => 12,
                 'description' => 'Paket premium selama 12 bulan dengan lowongan tak terbatas.',
                 'created_at' => now(),
